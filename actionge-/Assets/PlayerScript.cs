@@ -37,7 +37,6 @@ public class PlayerScript : MonoBehaviour {
 
 		if (Input.GetKeyDown (KeyCode.Space)) {
 			anim.SetBool ("Jump", true);
-			rigidbody.AddForce(transform.up * force, ForceMode.Impulse);
 		}
 		else
 			anim.SetBool ("Jump", false);
@@ -46,6 +45,8 @@ public class PlayerScript : MonoBehaviour {
 		//RUN再生中はキャラを動かす
 		if (anim.GetBool("Run"))
 			move (h);
+		if (anim.GetBool("Jump"))
+			rigidbody.AddForce(transform.up * force, ForceMode.Impulse);
 	}
 
 	/*移動用関数*/
