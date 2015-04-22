@@ -12,11 +12,4 @@ public class EnemyScript : MonoBehaviour {
 	void Update () {
 		
 	}
-
-	void OnCollisionEnter(Collision col){
-		Debug.Log (col.gameObject.tag);
-		if (col.gameObject.tag == "Leg") {
-			Destroy (this.gameObject, 0.5f);
-		}
-	}
 }
