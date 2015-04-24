@@ -3,10 +3,10 @@ using System.Collections;
 
 public class PlayerScript : MonoBehaviour {
 
-	//キャラクターのスピード・ジャンプ力等
+	//キャラクターのスピード・ジャンプ力・HP
 	public float jumpHeight;
 	public float forwardSpeed;
-//	public float useCurvesHeight = 0.5f;
+	public int HP;
 
 	// キャラクターの移動量
 	private Vector3 velocity;
@@ -35,6 +35,7 @@ public class PlayerScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		HP = 3;
 		rigidbody = GetComponent<Rigidbody> ();
 		// Animatorコンポーネントを取得する
 		anim = GetComponent<Animator>();
@@ -77,6 +78,9 @@ public class PlayerScript : MonoBehaviour {
 				}
 			}
 		}
+
+		if (HP < 0)
+			Debug.Log ("gameOver");
 	}
 
 	/*移動用関数*/
@@ -144,8 +148,8 @@ public class PlayerScript : MonoBehaviour {
 	//敵を倒すためのトリガー関数
 	void OnTriggerEnter(Collider col){
 		if (col.gameObject.tag == "Enemy") {
-			Destroy (col.gameObject, 0.3f);
+			this.rigidbody.AddForce(transform.up * jumpHeight, ForceMode.Impulse);
+			col.transform.position = new Vector3 (-100f,-100f,-100f);
 		}
-
 	}
 }
