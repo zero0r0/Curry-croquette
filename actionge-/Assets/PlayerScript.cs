@@ -33,6 +33,12 @@ public class PlayerScript : MonoBehaviour {
 	//jumpフラグ
 	bool jumpFlag;
 
+    // アイテム管理クラス
+    private ItemManager itemManager;
+
+    // オブジェクトプールTransform
+    private Transform objectPool;
+
 	// Use this for initialization
 	void Start () {
 		HP = 3;
@@ -44,6 +50,12 @@ public class PlayerScript : MonoBehaviour {
 		rb = GetComponent<Rigidbody>();
 		orgColHight = col.height;
 		orgVectColCenter = col.center;
+
+        // ItemManagerの取得
+        itemManager = GameObject.FindGameObjectWithTag("Item Manager").GetComponent<ItemManager>();
+
+        // オブジェクトプールのTransformの取得
+        objectPool = GameObject.FindGameObjectWithTag("Object Pool").transform;
 	}
 	
 	// Update is called once per frame
@@ -150,6 +162,17 @@ public class PlayerScript : MonoBehaviour {
 		if (col.gameObject.tag == "Enemy") {
 			this.rigidbody.AddForce(transform.up * jumpHeight, ForceMode.Impulse);
 			col.transform.position = new Vector3 (-100f,-100f,-100f);
-		}
+		} 
+        // タグがItemの場合、ItemManagerに取得したアイテムを送る
+        else if (col.tag == "Item") {
+            itemManager.SendItem(col.gameObject.GetComponent<ItemBehaviour>().ItemId);
+            SetToObjectPool(col.gameObject);
+        }
 	}
+
+    // GameObjectをObjectPoolにセットする
+    private void SetToObjectPool(GameObject obj) {
+        obj.transform.parent = objectPool;
+        obj.transform.position = objectPool.position;
+    }
 }
