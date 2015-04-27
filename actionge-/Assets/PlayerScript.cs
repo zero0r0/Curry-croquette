@@ -36,6 +36,9 @@ public class PlayerScript : MonoBehaviour {
     // アイテム管理クラス
     private ItemManager itemManager;
 
+    // UI管理クラス
+    private UIManager uiManager;
+
     // オブジェクトプールTransform
     private Transform objectPool;
 
@@ -53,6 +56,9 @@ public class PlayerScript : MonoBehaviour {
 
         // ItemManagerの取得
         itemManager = GameObject.FindGameObjectWithTag("Item Manager").GetComponent<ItemManager>();
+
+        // UIManagerの取得
+        uiManager = GameObject.FindGameObjectWithTag("UI Manager").GetComponent<UIManager>();
 
         // オブジェクトプールのTransformの取得
         objectPool = GameObject.FindGameObjectWithTag("Object Pool").transform;
@@ -169,6 +175,12 @@ public class PlayerScript : MonoBehaviour {
             SetToObjectPool(col.gameObject);
         }
 	}
+
+    void OnCollisionEnter(Collision col) {
+        if (col.gameObject.tag == "Enemy") {
+            uiManager.IncreasePlayerHP();
+        }
+    }
 
     // GameObjectをObjectPoolにセットする
     private void SetToObjectPool(GameObject obj) {

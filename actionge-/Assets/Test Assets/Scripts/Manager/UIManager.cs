@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 /// <summary>
@@ -8,18 +8,37 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour {
 
     [SerializeField]
-    private Text item;
+    private Image carrot;
+    [SerializeField]
+    private Image potato;
+    [SerializeField]
+    private Image onion;
+
+    [SerializeField]
+    private Image hp;
     
+    delegate void image(Image x);
     /// <summary>
-    /// アイテム情報を表示する
+    /// 取得アイテム情報を表示する
     /// </summary>
     /// <param name="item">アイテムID</param>
     public void SetItem(ItemManager.ItemId item) {
-        this.item.text = item.ToString();
+        image setColor = (Image x) => x.color = new Color(1, 1, 1, 1);
+        switch (item) {
+            case ItemManager.ItemId.Carrot:
+                setColor(carrot);
+                break;
+            case ItemManager.ItemId.Potato:
+                setColor(potato);
+                break;
+            case ItemManager.ItemId.Onion:
+                setColor(onion);
+                break;
+        }
     }
 
-    public void SetHp() {
-
+    public void IncreasePlayerHP() {
+        hp.enabled = false;
     }
 
 }

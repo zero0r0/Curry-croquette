@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
 /// アイテム管理用クラス
@@ -7,7 +7,7 @@ using System.Collections;
 public class ItemManager : MonoBehaviour {
 
     // アイテムID
-    public enum ItemId { Carrot, Curry, Croquette }
+    public enum ItemId { Carrot, Potato, Onion, Curry, Croquette }
 
     // アイテム構造体
     struct Item {
@@ -49,5 +49,12 @@ public class ItemManager : MonoBehaviour {
     /// <param name="item">アイテムID</param>
     private void SendItemInfoToUI(ItemId item) {
         uiManager.SetItem(item);
+    }
+
+    public delegate void SelectFromItemId(object obj);
+    public static void SelectArrayFromItemId(ItemId itemId, List<object> list, SelectFromItemId func) {
+        foreach (object item in list) {
+            
+        }
     }
 }
