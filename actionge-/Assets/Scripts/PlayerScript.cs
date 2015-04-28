@@ -39,6 +39,9 @@ public class PlayerScript : MonoBehaviour {
     // UI管理クラス
     private UIManager uiManager;
 
+    // ステージ管理クラス
+    private StageManager stageManager;
+
     // オブジェクトプールTransform
     private Transform objectPool;
 
@@ -55,11 +58,10 @@ public class PlayerScript : MonoBehaviour {
 		orgColHight = col.height;
 		orgVectColCenter = col.center;
 
-        // ItemManagerの取得
+        // 各Managerクラスの取得
         itemManager = GameObject.FindGameObjectWithTag("Item Manager").GetComponent<ItemManager>();
-
-        // UIManagerの取得
         uiManager = GameObject.FindGameObjectWithTag("UI Manager").GetComponent<UIManager>();
+        stageManager = GameObject.FindGameObjectWithTag("Stage Manager").GetComponent<StageManager>();
 
         // オブジェクトプールのTransformの取得
         objectPool = GameObject.FindGameObjectWithTag("Object Pool").transform;
@@ -171,6 +173,10 @@ public class PlayerScript : MonoBehaviour {
         else if (col.tag == "Item") {
             itemManager.SendItem(col.gameObject.GetComponent<ItemBehaviour>().ItemId);
             SetToObjectPool(col.gameObject);
+        }
+        // タグがGoalの場合、StageManagerにエンディング遷移処理を行うよう、指示を出す
+        else if (col.tag == "Goal") {
+            stageManager.TransitionToEndingScene();
         }
 	}
 

@@ -62,6 +62,7 @@ public class ItemManager : MonoBehaviour {
     /// <param name="item">アイテムID</param>
     private void SendItemInfoToUI(ItemId item) {
         uiManager.SetItem(item);
+        Rigidbody rig = new Rigidbody();
     }
 
     public delegate void SelectFromItemId(object obj);
