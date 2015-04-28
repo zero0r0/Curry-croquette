@@ -2,9 +2,7 @@
 using System.Collections;
 
 public class KinokoAI : MonoBehaviour {
-		
-	// キャラクターの移動量
-	public Vector3 velocity;
+
 	
 	//アニメーション関連の変数
 	private Animator anim;
@@ -30,7 +28,7 @@ public class KinokoAI : MonoBehaviour {
 	//移動関数
 	void Move(){
 		time += Time.deltaTime;
-		this.transform.Translate (velocity * speed * Time.deltaTime);
+		this.transform.localPosition += transform.forward * speed * Time.deltaTime;
 		ChangeDirection (5.0f);
 	}
 
