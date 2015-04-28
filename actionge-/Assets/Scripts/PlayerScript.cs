@@ -3,6 +3,11 @@ using System.Collections;
 
 public class PlayerScript : MonoBehaviour {
 
+	[SerializeField]
+	private float colY;
+	[SerializeField]
+	private float jumpOffset;
+
 	//キャラクターのスピード・ジャンプ力・HP
 	public float jumpHeight;
 	public float forwardSpeed;
@@ -134,6 +139,7 @@ public class PlayerScript : MonoBehaviour {
 		if(Input.GetKeyDown(KeyCode.Space)){
 			if(!anim.IsInTransition(0)){
 				anim.SetBool("Jump", true);
+				//rigidbody.useGravity = false;
 				rigidbody.AddForce(transform.up * jumpHeight, ForceMode.Impulse);
 			}
 	    }
@@ -144,20 +150,21 @@ public class PlayerScript : MonoBehaviour {
 		Ray ray = new Ray(transform.position + Vector3.up, -Vector3.up);
 		RaycastHit hitInfo = new RaycastHit();
 		// 高さが useCurvesHeight 以上ある時のみ、コライダーの高さと中心をJUMP00アニメーションについているカーブで調整する
-		if (Physics.Raycast(ray, out hitInfo))
-		{
-			col.height = orgColHight - (jumpHeight * 0.1f);			// 調整されたコライダーの高さ
-			float adjCenterY = orgVectColCenter.y + jumpHeight;
+		//if (Physics.Raycast(ray, out hitInfo))
+		//{
+			col.height = orgColHight - (jumpHeight * 0.01f);			// 調整されたコライダーの高さ
+			float adjCenterY = orgVectColCenter.y + jumpHeight*0.01f*colY;
 			col.center = new Vector3(0, adjCenterY, 0);		// 調整されたコライダーのセンター
-		}
+	//	}
 		StartCoroutine ("resetCollider");
 	}
 
 	// キャラクターのコライダーサイズのリセット関数
 	private IEnumerator resetCollider()
 	{
-		yield return new WaitForSeconds (0.4f);
+		yield return new WaitForSeconds (0.8f);
 		// コンポーネントのHeight、Centerの初期値を戻す
+		//rigidbody.useGravity = true;
 		col.height = orgColHight;
 		col.center = orgVectColCenter;
 	}
@@ -165,8 +172,8 @@ public class PlayerScript : MonoBehaviour {
 	//敵を倒すためのトリガー関数
 	void OnTriggerEnter(Collider col){
 		if (col.gameObject.tag == "Enemy") {
-			rigidbody.AddForce(transform.up * jumpHeight, ForceMode.Impulse);
-			JumpCol();
+			rigidbody.AddForce(transform.up * jumpHeight * jumpOffset, ForceMode.Impulse);
+			//JumpCol();
 			col.transform.position = new Vector3 (-100f,-100f,-100f);
 		}
         // タグがItemの場合、ItemManagerに取得したアイテムを送る
