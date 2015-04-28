@@ -96,9 +96,6 @@ public class PlayerScript : MonoBehaviour {
 				}
 			}
 		}
-
-		if (HP < 0)
-			Debug.Log ("gameOver");
 	}
 
 	/*移動用関数*/
@@ -176,19 +173,21 @@ public class PlayerScript : MonoBehaviour {
         }
 	}
 
-    void OnCollisionEnter(Collision col) {
-        if (col.gameObject.tag == "Enemy") {
-            uiManager.IncreasePlayerHP();
-        }
-    }
-
+    /// <summary>
+    /// ダメージを受け付ける
+    /// </summary>
+    /// <param name="damange">ダメージ量</param>
     public void ApplyDamage(int damange) {
         HP -= damange;
         uiManager.IncreasePlayerHP();
         anim.SetBool("Damage", true);
     }
 
-    // GameObjectをObjectPoolにセットする
+    /// <summary>
+    /// GameObjectをObjectPoolにセットする
+    /// Destroyの代わりに使用する
+    /// </summary>
+    /// <param name="obj">ObjectPoolに移動させるGameObject</param>
     private void SetToObjectPool(GameObject obj) {
         obj.transform.parent = objectPool;
         obj.transform.position = objectPool.position;

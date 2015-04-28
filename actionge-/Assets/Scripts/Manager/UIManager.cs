@@ -18,6 +18,7 @@ public class UIManager : MonoBehaviour {
     private Image hp;
     
     delegate void image(Image x);
+
     /// <summary>
     /// 取得アイテム情報を表示する
     /// </summary>

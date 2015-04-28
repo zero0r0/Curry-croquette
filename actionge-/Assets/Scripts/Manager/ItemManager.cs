@@ -10,9 +10,22 @@ public class ItemManager : MonoBehaviour {
     public enum ItemId { Carrot, Potato, Onion, Curry, Croquette }
 
     // アイテム構造体
-    struct Item {
+    public struct Item {
         public ItemId itemId;
         public int count;
+        public Item(ItemId itemId) {
+            this.itemId = itemId;
+            this.count = 0;
+        }
+    }
+
+    [System.Serializable]
+    public class Items {
+        public Item carrot = new Item(ItemId.Carrot);
+        public Item potato = new Item(ItemId.Potato);
+        public Item onion = new Item(ItemId.Onion);
+        public Item curry = new Item(ItemId.Curry);
+        public Item croquette = new Item(ItemId.Croquette);
     }
 
     // 各アイテム構造体
@@ -30,7 +43,7 @@ public class ItemManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// プレイヤーから送られたアイテムを取得し、格納する
+    /// プレイヤーから送られたアイテムを取得し、所持数を増やす
     /// </summary>
     /// <param name="item">アイテムID</param>
     public void SendItem(ItemId item) {
@@ -52,7 +65,7 @@ public class ItemManager : MonoBehaviour {
     }
 
     public delegate void SelectFromItemId(object obj);
-    public static void SelectArrayFromItemId(ItemId itemId, List<object> list, SelectFromItemId func) {
+    public static void SelectArrayFromItemId(ItemId itemId, List<Item> list, SelectFromItemId func) {
         foreach (object item in list) {
             
         }
