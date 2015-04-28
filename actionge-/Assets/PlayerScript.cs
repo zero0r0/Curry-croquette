@@ -182,6 +182,12 @@ public class PlayerScript : MonoBehaviour {
         }
     }
 
+    public void ApplyDamage(int damange) {
+        HP -= damange;
+        uiManager.IncreasePlayerHP();
+        anim.SetBool("Damage", true);
+    }
+
     // GameObjectをObjectPoolにセットする
     private void SetToObjectPool(GameObject obj) {
         obj.transform.parent = objectPool;

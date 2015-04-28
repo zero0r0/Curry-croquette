@@ -45,9 +45,7 @@ public class KinokoAI : MonoBehaviour {
 	//プレイヤーにあたったときの判定
 	void OnCollisionEnter(Collision col){
 		if (col.gameObject.tag == "Player") {
-			col.gameObject.GetComponent<PlayerScript>().HP--;
-			//col.rigidbody.AddForce();
-			Debug.Log(col.gameObject.GetComponent<PlayerScript>().HP);
+            col.gameObject.GetComponent<PlayerScript>().ApplyDamage(1);
 		}
 	}
 
