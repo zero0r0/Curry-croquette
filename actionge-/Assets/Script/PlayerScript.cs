@@ -45,6 +45,7 @@ public class PlayerScript : MonoBehaviour {
 		rigidbody = GetComponent<Rigidbody> ();
 		// Animatorコンポーネントを取得する
 		anim = GetComponent<Animator>();
+
 		// CapsuleColliderコンポーネントを取得する（カプセル型コリジョン）
 		col = GetComponent<CapsuleCollider>();
 		rb = GetComponent<Rigidbody>();
@@ -99,13 +100,12 @@ public class PlayerScript : MonoBehaviour {
 	void move(float h){
 		if (currentBaseState.nameHash == idleState) {
 			anim.SetBool ("Run", true);
-		
 		}
 		if (h < 0) {
 			//anim.SetBool ("Run", true);
 			transform.rotation = Quaternion.AngleAxis (-90f, Vector3.up);
 			velocity = new Vector3 (-h, 0, 0);
-			velocity *= forwardSpeed;						// 移動速度を掛ける
+			velocity *= forwardSpeed;					// 移動速度を掛ける
 			transform.localPosition -= velocity * Time.fixedDeltaTime;
 		}
 		else if (h > 0) {
@@ -141,16 +141,16 @@ public class PlayerScript : MonoBehaviour {
 		// 高さが useCurvesHeight 以上ある時のみ、コライダーの高さと中心をJUMP00アニメーションについているカーブで調整する
 		if (Physics.Raycast(ray, out hitInfo))
 		{
-			col.height = orgColHight - jumpHeight;			// 調整されたコライダーの高さ
+			col.height = orgColHight - (jumpHeight * 0.1f);			// 調整されたコライダーの高さ
 			float adjCenterY = orgVectColCenter.y + jumpHeight;
-			col.center = new Vector3(0, adjCenterY, 0);	// 調整されたコライダーのセンター
+			col.center = new Vector3(0, adjCenterY, 0);		// 調整されたコライダーのセンター
 		}
 		StartCoroutine ("resetCollider");
 	}
 
 	// キャラクターのコライダーサイズのリセット関数
 	private IEnumerator resetCollider()
-	{	
+	{
 		yield return new WaitForSeconds (0.4f);
 		// コンポーネントのHeight、Centerの初期値を戻す
 		col.height = orgColHight;
@@ -160,9 +160,10 @@ public class PlayerScript : MonoBehaviour {
 	//敵を倒すためのトリガー関数
 	void OnTriggerEnter(Collider col){
 		if (col.gameObject.tag == "Enemy") {
-			this.rigidbody.AddForce(transform.up * jumpHeight, ForceMode.Impulse);
+			rigidbody.AddForce(transform.up * jumpHeight, ForceMode.Impulse);
+			JumpCol();
 			col.transform.position = new Vector3 (-100f,-100f,-100f);
-		} 
+		}
         // タグがItemの場合、ItemManagerに取得したアイテムを送る
         else if (col.tag == "Item") {
             itemManager.SendItem(col.gameObject.GetComponent<ItemBehaviour>().ItemId);
@@ -175,4 +176,5 @@ public class PlayerScript : MonoBehaviour {
         obj.transform.parent = objectPool;
         obj.transform.position = objectPool.position;
     }
+
 }
