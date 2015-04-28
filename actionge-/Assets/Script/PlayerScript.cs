@@ -36,6 +36,9 @@ public class PlayerScript : MonoBehaviour {
     // アイテム管理クラス
     private ItemManager itemManager;
 
+    // UI管理クラス
+    private UIManager uiManager;
+
     // オブジェクトプールTransform
     private Transform objectPool;
 
@@ -54,6 +57,9 @@ public class PlayerScript : MonoBehaviour {
 
         // ItemManagerの取得
         itemManager = GameObject.FindGameObjectWithTag("Item Manager").GetComponent<ItemManager>();
+
+        // UIManagerの取得
+        uiManager = GameObject.FindGameObjectWithTag("UI Manager").GetComponent<UIManager>();
 
         // オブジェクトプールのTransformの取得
         objectPool = GameObject.FindGameObjectWithTag("Object Pool").transform;
@@ -91,9 +97,6 @@ public class PlayerScript : MonoBehaviour {
 				}
 			}
 		}
-
-		if (HP < 0)
-			Debug.Log ("gameOver");
 	}
 
 	/*移動用関数*/
@@ -171,7 +174,21 @@ public class PlayerScript : MonoBehaviour {
         }
 	}
 
-    // GameObjectをObjectPoolにセットする
+    /// <summary>
+    /// ダメージを受け付ける
+    /// </summary>
+    /// <param name="damange">ダメージ量</param>
+    public void ApplyDamage(int damange) {
+        HP -= damange;
+        uiManager.IncreasePlayerHP();
+        anim.SetBool("Damage", true);
+    }
+
+    /// <summary>
+    /// GameObjectをObjectPoolにセットする
+    /// Destroyの代わりに使用する
+    /// </summary>
+    /// <param name="obj">ObjectPoolに移動させるGameObject</param>
     private void SetToObjectPool(GameObject obj) {
         obj.transform.parent = objectPool;
         obj.transform.position = objectPool.position;
