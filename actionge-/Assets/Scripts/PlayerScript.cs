@@ -84,6 +84,17 @@ public class PlayerScript : MonoBehaviour {
 				}
 			}
 		}
+		// レイキャストをキャラクターのセンターから落とす
+		//キャラがジャンプ可能かどうかを判別
+		/*RaycastHit hit;
+		if (Physics.Raycast (transform.position + Vector3.up, -Vector3.up, out hit, 1)) {
+			Debug.Log(hit.collider.gameObject.tag);
+			if(hit.collider.tag == "Floor") 
+				jumpFlag = true;
+			else 
+				jumpFlag = false;
+		}
+		*/
 	}
 
 	/*移動用関数*/
@@ -108,15 +119,7 @@ public class PlayerScript : MonoBehaviour {
 
 	/*ジャンプ動作の関数 key判定条件も含む*/
 	void jumpAnimation(){
-		// レイキャストをキャラクターのセンターから落とす
-		RaycastHit hit;
-		if (Physics.Raycast (transform.position + Vector3.up, -Vector3.up, out hit, 100)) {
-			if(hit.collider.tag == "Floor") 
-				jumpFlag = true;
-			else 
-				jumpFlag = false;
-		}
-		if(Input.GetKeyDown(KeyCode.Space)){
+		if(Input.GetKeyDown(KeyCode.Space) && jumpFlag){
 			if(!anim.IsInTransition(0)){
 				anim.SetBool("Jump", true);
 				//rigidbody.useGravity = false;
@@ -130,8 +133,6 @@ public class PlayerScript : MonoBehaviour {
 		Ray ray = new Ray(transform.position + Vector3.up, -Vector3.up);
 		RaycastHit hitInfo = new RaycastHit();
 		// 高さが useCurvesHeight 以上ある時のみ、コライダーの高さと中心をJUMP00アニメーションについているカーブで調整する
-		//if (Physics.Raycast(ray, out hitInfo))
-		//{
 			col.height = orgColHight - (jumpHeight * 0.01f);			// 調整されたコライダーの高さ
 			float adjCenterY = orgVectColCenter.y + jumpHeight*0.01f*colY;
 			col.center = new Vector3(0, adjCenterY, 0);		// 調整されたコライダーのセンター
@@ -144,12 +145,12 @@ public class PlayerScript : MonoBehaviour {
 	{
 		yield return new WaitForSeconds (0.8f);
 		// コンポーネントのHeight、Centerの初期値を戻す
-		//rigidbody.useGravity = true;
 		col.height = orgColHight;
 		col.center = orgVectColCenter;
 	}
 
 	//敵を倒すためのトリガー関数
+	//地面についているかの判定も行う
 	void OnTriggerEnter(Collider col){
 		if (col.gameObject.tag == "Enemy") {
 			rigidbody.AddForce(transform.up * jumpHeight * jumpOffset, ForceMode.Impulse);
@@ -165,6 +166,11 @@ public class PlayerScript : MonoBehaviour {
         else if (col.tag == "Goal") {
             MainGameManager.Instance.TouthGoal();
         }
+
+		if (col.gameObject.tag == "Floor")
+			jumpFlag = true;
+		else 
+			jumpFlag = false;
 	}
 
     /// <summary>
