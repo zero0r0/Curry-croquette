@@ -38,15 +38,6 @@ public class PlayerScript : MonoBehaviour {
 	//jumpフラグ
 	bool jumpFlag;
 
-    // アイテム管理クラス
-    private ItemManager itemManager;
-
-    // UI管理クラス
-    private UIManager uiManager;
-
-    // オブジェクトプールTransform
-    private Transform objectPool;
-
 	// Use this for initialization
 	void Start () {
 		HP = 3;
@@ -59,15 +50,6 @@ public class PlayerScript : MonoBehaviour {
 		rb = GetComponent<Rigidbody>();
 		orgColHight = col.height;
 		orgVectColCenter = col.center;
-
-        // ItemManagerの取得
-        itemManager = GameObject.FindGameObjectWithTag("Item Manager").GetComponent<ItemManager>();
-
-        // UIManagerの取得
-        uiManager = GameObject.FindGameObjectWithTag("UI Manager").GetComponent<UIManager>();
-
-        // オブジェクトプールのTransformの取得
-        objectPool = GameObject.FindGameObjectWithTag("Object Pool").transform;
 	}
 	
 	// Update is called once per frame
@@ -176,8 +158,12 @@ public class PlayerScript : MonoBehaviour {
 		}
         // タグがItemの場合、ItemManagerに取得したアイテムを送る
         else if (col.tag == "Item") {
-            itemManager.SendItem(col.gameObject.GetComponent<ItemBehaviour>().ItemId);
-            SetToObjectPool(col.gameObject);
+            ItemManager.Instance.SendItem(col.gameObject.GetComponent<ItemBehaviour>().ItemId);
+            MainGameManager.Instance.SetObjectToObjectPool(col.gameObject);
+        }
+        // タグがGoalの場合、MainGameManagerにエンディング遷移処理を行うよう、指示を出す
+        else if (col.tag == "Goal") {
+            MainGameManager.Instance.TouthGoal();
         }
 	}
 
@@ -187,18 +173,8 @@ public class PlayerScript : MonoBehaviour {
     /// <param name="damange">ダメージ量</param>
     public void ApplyDamage(int damange) {
         HP -= damange;
-        uiManager.IncreasePlayerHP();
+        UIManager.Instance.IncreasePlayerHP();
         anim.SetBool("Damage", true);
-    }
-
-    /// <summary>
-    /// GameObjectをObjectPoolにセットする
-    /// Destroyの代わりに使用する
-    /// </summary>
-    /// <param name="obj">ObjectPoolに移動させるGameObject</param>
-    private void SetToObjectPool(GameObject obj) {
-        obj.transform.parent = objectPool;
-        obj.transform.position = objectPool.position;
     }
 
 }

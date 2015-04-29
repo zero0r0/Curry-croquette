@@ -1,73 +1,90 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Reflection;
 
 /// <summary>
 /// アイテム管理用クラス
 /// </summary>
-public class ItemManager : MonoBehaviour {
+public class ItemManager : SingletonMonoBehaviour<ItemManager> {
 
-    // アイテムID
-    public enum ItemId { Carrot, Potato, Onion, Curry, Croquette }
+	// アイテムID
+	public enum ItemId { Carrot, Potato, Onion, Mince, Curry, Croquette }
 
-    // アイテム構造体
-    public struct Item {
-        public ItemId itemId;
-        public int count;
-        public Item(ItemId itemId) {
-            this.itemId = itemId;
-            this.count = 0;
-        }
-    }
+	// アイテム構造体
+	public struct Item {
+		public ItemId itemId;
+		public int count;
+		public Item(ItemId itemId) {
+			this.itemId = itemId;
+			this.count = 0;
+		}
+	}
 
-    [System.Serializable]
-    public class Items {
-        public Item carrot = new Item(ItemId.Carrot);
-        public Item potato = new Item(ItemId.Potato);
-        public Item onion = new Item(ItemId.Onion);
-        public Item curry = new Item(ItemId.Curry);
-        public Item croquette = new Item(ItemId.Croquette);
-    }
+	private Item[] items = {
+		new Item(ItemId.Carrot),
+		new Item(ItemId.Potato),
+		new Item(ItemId.Onion),
+		new Item(ItemId.Mince),
+	};
 
-    // 各アイテム構造体
-    private Item carrot;
-    private Item curry;
-    private Item croquette;
+	new void Awake() {
+		CheckInstance();
+		DontDestroyOnLoad(this.gameObject);
+	}
 
-    // UI管理クラス
-    [SerializeField]
-    private UIManager uiManager;
-
-    void Awake() {
-        if (uiManager == null)
-            uiManager = GameObject.FindWithTag("UI Manager").GetComponent<UIManager>();
-    }
+	void Start() {
+	}
 
     /// <summary>
     /// プレイヤーから送られたアイテムを取得し、所持数を増やす
     /// </summary>
     /// <param name="item">アイテムID</param>
     public void SendItem(ItemId item) {
-        switch (item) {
-            case ItemId.Curry:
-                curry.count++;
-                break;
-        }
-
-        this.SendItemInfoToUI(item);
-    }
-    
-    /// <summary>
-    /// アイテムの情報をUIManagerに送り、UI表示を更新する
-    /// </summary>
-    /// <param name="item">アイテムID</param>
-    private void SendItemInfoToUI(ItemId item) {
-        uiManager.SetItem(item);
+		SelectArrayFromItemId(item, items, (ref Item x) => x.count = x.count + 1);
+        UIManager.Instance.SetItem(item);
     }
 
-    public delegate void SelectFromItemId(object obj);
-    public static void SelectArrayFromItemId(ItemId itemId, List<Item> list, SelectFromItemId func) {
-        foreach (object item in list) {
-            
+	public Item[] GetCollectedItems() {
+		return items;
+	}
+
+	public bool CheckCollectAllItmes() {
+		foreach (Item item in ItemManager.Instance.items) {
+			if (item.count == 0)
+				return false;
+		}
+		return true;
+	}
+
+    public delegate void SelectFromItemBehaviour(ItemBehaviour item);
+	/// <summary>
+	/// 該当するitemidのオブジェクトに対して、指定された処理を行う
+	/// </summary>
+	/// <param name="itemid">アイテムid</param>
+	/// <param name="items">アイテムリスト</param>
+	/// <param name="func">処理</param>
+	public void SelectArrayFromItemId(ItemId itemId, ItemBehaviour[] items, SelectFromItemBehaviour func) {
+        foreach (ItemBehaviour item in items) {
+            if (item.ItemId == itemId) {
+				func(item);
+			}
         }
     }
+
+	public delegate void SelectFromItem(ref Item item);
+	public void SelectArrayFromItemId(ItemId itemId, Item[] items, SelectFromItem func) {
+		for (int i = 0; i < items.Length; i++) {
+			if (items[i].itemId == itemId) {
+				func(ref items[i]);
+			}
+		}
+		ShowItemInfo();
+    }
+	
+	public void ShowItemInfo() {
+		foreach (Item item in items) {
+			Debug.Log(item.itemId.ToString() + ":" + item.count);
+		}
+	}
+
 }

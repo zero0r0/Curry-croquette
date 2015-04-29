@@ -1,41 +1,32 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System.Linq;
 
 /// <summary>
 /// ユーザインタフェース管理用クラス
 /// </summary>
-public class UIManager : MonoBehaviour {
+public class UIManager : SingletonMonoBehaviour<UIManager> {
 
-    [SerializeField]
-    private Image carrot;
-    [SerializeField]
-    private Image potato;
-    [SerializeField]
-    private Image onion;
-
-    [SerializeField]
+	// プレイヤーの体力UI
     private Image hp;
-    
-    delegate void image(Image x);
+
+	private ItemBehaviour[] items;
+
+	new void Awake() {
+		CheckInstance();
+		Canvas canvas = FindObjectOfType<Canvas>();
+		items = canvas.transform.GetComponentsInChildren<ItemBehaviour>();
+		hp = canvas.transform.GetComponentInChildren<HPBehaviour>().gameObject.GetComponent<Image>();
+	}
 
     /// <summary>
     /// 取得アイテム情報を表示する
     /// </summary>
     /// <param name="item">アイテムID</param>
     public void SetItem(ItemManager.ItemId item) {
-        image setColor = (Image x) => x.color = new Color(1, 1, 1, 1);
-        switch (item) {
-            case ItemManager.ItemId.Carrot:
-                setColor(carrot);
-                break;
-            case ItemManager.ItemId.Potato:
-                setColor(potato);
-                break;
-            case ItemManager.ItemId.Onion:
-                setColor(onion);
-                break;
-        }
+		ItemManager.Instance.SelectArrayFromItemId(item, items, 
+			(x) => x.gameObject.GetComponent<Image>().color = new Color(1, 1, 1, 1));
     }
 
     public void IncreasePlayerHP() {
