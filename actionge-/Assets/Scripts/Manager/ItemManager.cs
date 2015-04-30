@@ -32,9 +32,6 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager> {
 		DontDestroyOnLoad(this.gameObject);
 	}
 
-	void Start() {
-	}
-
     /// <summary>
     /// プレイヤーから送られたアイテムを取得し、所持数を増やす
     /// </summary>

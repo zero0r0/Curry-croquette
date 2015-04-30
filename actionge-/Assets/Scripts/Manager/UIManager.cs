@@ -13,6 +13,8 @@ public class UIManager : SingletonMonoBehaviour<UIManager> {
 
 	private ItemBehaviour[] items;
 
+	private float hpRate = 0.33f;
+
 	new void Awake() {
 		CheckInstance();
 		Canvas canvas = FindObjectOfType<Canvas>();
@@ -30,7 +32,8 @@ public class UIManager : SingletonMonoBehaviour<UIManager> {
     }
 
     public void IncreasePlayerHP() {
-        hp.enabled = false;
+		if (hp.fillAmount > 0.5f)
+        hp.fillAmount -= hpRate;
     }
 
 }
