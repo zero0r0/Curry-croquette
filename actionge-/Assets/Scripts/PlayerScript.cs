@@ -43,24 +43,27 @@ public class PlayerScript : MonoBehaviour {
 	public enum VoiceId {Jump, Get, Damage};
 
 	//Voice SE
-	public AudioClip jumpVoice;
-	public AudioClip getVoice;
-	public AudioClip damageVoice;
-
+	[SerializeField]
+	private AudioClip jumpVoice;
+	[SerializeField]
+	private AudioClip getVoice;
+	[SerializeField]
+	private AudioClip[] damageVoice; 
+	//PlayerのAudioSource
 	private AudioSource audioSource;
 
 	// Use this for initialization
 	void Start () {
 		HP = 3;
-
+		/*----------コンポーネントの習得------------*/
 		audioSource = GetComponent<AudioSource> ();
 		rigidbody = GetComponent<Rigidbody> ();
 		// Animatorコンポーネントを取得する
 		anim = GetComponent<Animator>();
-
 		// CapsuleColliderコンポーネントを取得する（カプセル型コリジョン）
 		col = GetComponent<CapsuleCollider>();
 		rb = GetComponent<Rigidbody>();
+
 		orgColHight = col.height;
 		orgVectColCenter = col.center;
 	}
@@ -206,6 +209,7 @@ public class PlayerScript : MonoBehaviour {
 		if (!anim.GetBool("Damage")) {
 			HP -= damange;
 			UIManager.Instance.IncreasePlayerHP ();
+			Voice(VoiceId.Damage);
 			anim.SetBool ("Damage", true);
 		}
     }
@@ -220,7 +224,9 @@ public class PlayerScript : MonoBehaviour {
 			audioSource.Play();
 		}
 		if (v == VoiceId.Damage) {
-			this.audioSource.clip = damageVoice;
+			int n;
+			n = Random.Range(0,5);
+			this.audioSource.clip = damageVoice[n];
 			audioSource.Play();
 		}
 
