@@ -16,6 +16,8 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager> {
 	public Effect getItem;
 	public Effect killEnemy;
 
+	public float destroyInterval = 2;
+
 	private AudioSource audioSource;
 
 	void Start() {
@@ -26,7 +28,8 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager> {
 	public void InstantEffect(EffectId effectId, Vector3 position) {
 		
 		EffectParticle func = (particle, pos, audioClip) => {
-			Instantiate(particle, pos, Quaternion.Euler(Vector3.zero));
+			GameObject obj = Instantiate(particle, pos, Quaternion.Euler(Vector3.zero)) as GameObject;
+			Destroy(obj, destroyInterval);
 			audioSource.PlayOneShot(audioClip);
 		};
 

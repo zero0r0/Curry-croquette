@@ -173,14 +173,14 @@ public class PlayerScript : MonoBehaviour {
 		if (col.gameObject.tag == "Enemy") {
 			rigidbody.AddForce(transform.up * jumpHeight * jumpOffset, ForceMode.Impulse);
 			//JumpCol();
+			EffectManager.Instance.InstantEffect(EffectManager.EffectId.KillEnemy, col.gameObject.transform.position);
 			col.transform.position = new Vector3 (-100f,-100f,-100f);
-			EffectManager.Instance.InstantEffect(EffectManager.EffectId.KillEnemy);
 		}
         // タグがItemの場合、ItemManagerに取得したアイテムを送る
         else if (col.tag == "Item") {
             ItemManager.Instance.SendItem(col.gameObject.GetComponent<ItemBehaviour>().ItemId);
+			EffectManager.Instance.InstantEffect(EffectManager.EffectId.ItemGet, col.gameObject.transform.position);
             MainGameManager.Instance.SetObjectToObjectPool(col.gameObject);
-			EffectManager.Instance.InstantEffect(EffectManager.EffectId.ItemGet);
         }
         // タグがGoalの場合、MainGameManagerにエンディング遷移処理を行うよう、指示を出す
         else if (col.tag == "Goal") {
