@@ -62,12 +62,11 @@ public class PlayerScript : MonoBehaviour {
 		count = 0;
 		HP = 3;
 //		Time.captureFramerate = 60;
-		/*----------コンポーネントの習得------------*/
+		/*----------コンポーネントの習得-------------------------------*/
 		audioSource = GetComponent<AudioSource> ();
 		rigidbody = GetComponent<Rigidbody> ();
-		// Animatorコンポーネントを取得する
 		anim = GetComponent<Animator>();
-		// CapsuleColliderコンポーネントを取得する（カプセル型コリジョン）
+		// CapsuleColliderコンポーネントを取得する
 		col = GetComponent<CapsuleCollider>();
 		rb = GetComponent<Rigidbody>();
 
@@ -109,13 +108,14 @@ public class PlayerScript : MonoBehaviour {
 		}
 		//アニメーションのステートがJumpの最中
 		if (currentBaseState.nameHash == jumpState) {
+			touchFloor = false;
 			if(!anim.IsInTransition(0))
 			{	
 				anim.SetBool("Jump", false);
 				if(Mathf.Abs(h)!=0 && touchFloor){
 					anim.SetBool("Run",true);
 				}
-			}
+			} 
 		}
 		// レイキャストをキャラクターのセンターから落とす
 		//キャラがジャンプ可能かどうかを判別
@@ -192,6 +192,7 @@ public class PlayerScript : MonoBehaviour {
 			EffectManager.Instance.InstantEffect(EffectManager.EffectId.KillEnemy, col.gameObject.transform.position);
 			//rigidbody.AddForce(transform.up * jumpHeight * jumpOffset, ForceMode.Impulse);
 			rigidbody.velocity = (transform.up * jumpHeight);
+			touchFloor = false;
 			col.transform.position = new Vector3 (-100f,-100f,-100f);
 		}
         // タグがItemの場合、ItemManagerに取得したアイテムを送る
@@ -199,9 +200,10 @@ public class PlayerScript : MonoBehaviour {
             ItemManager.Instance.SendItem(col.gameObject.GetComponent<ItemBehaviour>().ItemId);
 			EffectManager.Instance.InstantEffect(EffectManager.EffectId.GetItem, col.gameObject.transform.position);
             MainGameManager.Instance.SetObjectToObjectPool(col.gameObject);
+			Voice(VoiceId.Get);
         }
         // タグがGoalの場合、MainGameManagerにエンディング遷移処理を行うよう、指示を出す
-        else if (col.tag == "Goal") {
+		else if (col.tag == "Goal" && ItemManager.Instance.CheckCollectAllItmes()) {
             MainGameManager.Instance.TouthGoal();
         }
 
