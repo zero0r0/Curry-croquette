@@ -34,13 +34,26 @@ public class PlayerScript : MonoBehaviour {
 	static int idleState = Animator.StringToHash ("Base Layer.Idle");
 	static int locoState = Animator.StringToHash ("Base Layer.Locomotion");
 	static int jumpState = Animator.StringToHash ("Base Layer.Jump");
+	static int damaState = Animator.StringToHash ("Base Layer.Damage");
 
 	//jumpフラグ
-	bool jumpFlag;
+	bool touchFloor;
+
+	//ボイスID
+	public enum VoiceId {Jump, Get, Damage};
+
+	//Voice SE
+	public AudioClip jumpVoice;
+	public AudioClip getVoice;
+	public AudioClip damageVoice;
+
+	private AudioSource audioSource;
 
 	// Use this for initialization
 	void Start () {
 		HP = 3;
+
+		audioSource = GetComponent<AudioSource> ();
 		rigidbody = GetComponent<Rigidbody> ();
 		// Animatorコンポーネントを取得する
 		anim = GetComponent<Animator>();
@@ -79,7 +92,7 @@ public class PlayerScript : MonoBehaviour {
 			if(!anim.IsInTransition(0))
 			{	
 				anim.SetBool("Jump", false);
-				if(Mathf.Abs(h)!=0){
+				if(Mathf.Abs(h)!=0 && touchFloor){
 					anim.SetBool("Run",true);
 				}
 			}
@@ -99,7 +112,7 @@ public class PlayerScript : MonoBehaviour {
 
 	/*移動用関数*/
 	void move(float h){
-		if (currentBaseState.nameHash == idleState) {
+		if (currentBaseState.nameHash == idleState && touchFloor) {
 			anim.SetBool ("Run", true);
 		}
 		if (h < 0) {
@@ -119,9 +132,10 @@ public class PlayerScript : MonoBehaviour {
 
 	/*ジャンプ動作の関数 key判定条件も含む*/
 	void jumpAnimation(){
-		if(Input.GetKeyDown(KeyCode.Space) && jumpFlag){
+		if(Input.GetKeyDown(KeyCode.Space) && touchFloor){
 			if(!anim.IsInTransition(0)){
 				anim.SetBool("Jump", true);
+				touchFloor = false;
 				//rigidbody.useGravity = false;
 				rigidbody.AddForce(transform.up * jumpHeight, ForceMode.Impulse);
 			}
@@ -130,6 +144,7 @@ public class PlayerScript : MonoBehaviour {
 
 	//ジャンプ中のあたり判定の操作・アニメーションeventから呼び出す
 	void JumpCol(){
+		Voice (VoiceId.Jump);
 		Ray ray = new Ray(transform.position + Vector3.up, -Vector3.up);
 		RaycastHit hitInfo = new RaycastHit();
 		// 高さが useCurvesHeight 以上ある時のみ、コライダーの高さと中心をJUMP00アニメーションについているカーブで調整する
@@ -168,20 +183,46 @@ public class PlayerScript : MonoBehaviour {
             MainGameManager.Instance.TouthGoal();
         }
 
-		if (col.gameObject.tag == "Floor")
-			jumpFlag = true;
-		else 
-			jumpFlag = false;
 	}
+
+	void OnCollisionStay(Collision col){
+		RaycastHit hit;
+		if (Physics.Raycast (transform.position + Vector3.up, -Vector3.up, out hit, 1.2f)) {
+			if (col.gameObject.tag == "Floor")
+				touchFloor = true;
+			else 
+				touchFloor = false;
+		}
+	}
+
+
 
     /// <summary>
     /// ダメージを受け付ける
     /// </summary>
     /// <param name="damange">ダメージ量</param>
     public void ApplyDamage(int damange) {
-        HP -= damange;
-        UIManager.Instance.IncreasePlayerHP();
-        anim.SetBool("Damage", true);
+		if (!anim.GetBool("Damage")) {
+			HP -= damange;
+			UIManager.Instance.IncreasePlayerHP ();
+			anim.SetBool ("Damage", true);
+		}
     }
+
+	public void Voice(VoiceId v){
+		if (v == VoiceId.Get) {
+			this.audioSource.clip = getVoice;
+			audioSource.Play();
+		}
+		if (v == VoiceId.Jump) {
+			this.audioSource.clip = jumpVoice;
+			audioSource.Play();
+		}
+		if (v == VoiceId.Damage) {
+			this.audioSource.clip = damageVoice;
+			audioSource.Play();
+		}
+
+	}
 
 }
