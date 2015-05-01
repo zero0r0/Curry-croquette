@@ -4,7 +4,7 @@ using System.Collections;
 [RequireComponent(typeof(AudioSource))]
 public class EffectManager : SingletonMonoBehaviour<EffectManager> {
 
-	public enum EffectId { ItemGet, KillEnemy,  }
+	public enum EffectId { GetItem, KillEnemy, GetSweet, }
 
 	[System.Serializable]
 	public struct Effect {
@@ -15,6 +15,7 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager> {
 	
 	public Effect getItem;
 	public Effect killEnemy;
+	public Effect getSweet;
 
 	public float destroyInterval = 2;
 
@@ -34,11 +35,14 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager> {
 		};
 
 		switch (effectId) {
-			case EffectId.ItemGet:
+			case EffectId.GetItem:
 				func(getItem.particle, position, getItem.se);
 				break;
 			case EffectId.KillEnemy:
 				func(killEnemy.particle, position, killEnemy.se);
+				break;
+			case EffectId.GetSweet:
+				func(getSweet.particle, position, getSweet.se);
 				break;
 		}
 	}
@@ -50,11 +54,14 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager> {
 		};
 
 		switch (effectId) {
-			case EffectId.ItemGet:
+			case EffectId.GetItem:
 				audioSource.PlayOneShot(getItem.se);
 				break;
 			case EffectId.KillEnemy:
 				audioSource.PlayOneShot(killEnemy.se);
+				break;
+			case EffectId.GetSweet:
+				audioSource.PlayOneShot(getSweet.se);
 				break;
 		}
 	}
