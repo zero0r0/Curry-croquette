@@ -1,15 +1,29 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class AudioManager : MonoBehaviour {
+public class AudioManager : SingletonMonoBehaviour<AudioManager> {
 
-	// Use this for initialization
-	void Start () {
-	
+	public enum SoundId { GameOver, }
+
+	[System.Serializable]
+	public struct Sound {
+		public SoundId soundId;
+		public AudioClip sound;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+
+	public Sound gameOver;
+
+	private AudioSource audioSource;
+
+	void Start() {
+		audioSource = this.GetComponent<AudioSource>();
+	}
+
+	public void PlaySound(SoundId soundId) {
+		switch (soundId) {
+			case SoundId.GameOver:
+				audioSource.PlayOneShot(gameOver.sound);
+				break;
+		}
 	}
 }
