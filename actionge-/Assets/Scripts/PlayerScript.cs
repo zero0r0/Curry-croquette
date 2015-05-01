@@ -34,6 +34,7 @@ public class PlayerScript : MonoBehaviour {
 	static int idleState = Animator.StringToHash ("Base Layer.Idle");
 	static int locoState = Animator.StringToHash ("Base Layer.Locomotion");
 	static int jumpState = Animator.StringToHash ("Base Layer.Jump");
+	static int damaState = Animator.StringToHash ("Base Layer.Damage");
 
 	//jumpフラグ
 	bool touchFloor;
@@ -134,6 +135,7 @@ public class PlayerScript : MonoBehaviour {
 		if(Input.GetKeyDown(KeyCode.Space) && touchFloor){
 			if(!anim.IsInTransition(0)){
 				anim.SetBool("Jump", true);
+				touchFloor = false;
 				//rigidbody.useGravity = false;
 				rigidbody.AddForce(transform.up * jumpHeight, ForceMode.Impulse);
 			}
@@ -180,20 +182,30 @@ public class PlayerScript : MonoBehaviour {
             MainGameManager.Instance.TouthGoal();
         }
 
-		if (col.gameObject.tag == "Floor")
-			touchFloor = true;
-		else 
-			touchFloor = false;
 	}
+
+	void OnCollisionStay(Collision col){
+		RaycastHit hit;
+		if (Physics.Raycast (transform.position + Vector3.up, -Vector3.up, out hit, 1.2f)) {
+			if (col.gameObject.tag == "Floor")
+				touchFloor = true;
+			else 
+				touchFloor = false;
+		}
+	}
+
+
 
     /// <summary>
     /// ダメージを受け付ける
     /// </summary>
     /// <param name="damange">ダメージ量</param>
     public void ApplyDamage(int damange) {
-        HP -= damange;
-        UIManager.Instance.IncreasePlayerHP();
-        anim.SetBool("Damage", true);
+		if (!anim.GetBool("Damage")) {
+			HP -= damange;
+			UIManager.Instance.IncreasePlayerHP ();
+			anim.SetBool ("Damage", true);
+		}
     }
 
 	public void Voice(VoiceId v){
