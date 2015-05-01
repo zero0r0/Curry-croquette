@@ -52,9 +52,16 @@ public class PlayerScript : MonoBehaviour {
 	//PlayerのAudioSource
 	private AudioSource audioSource;
 
+	float nowtime;
+	int count;
+
+
 	// Use this for initialization
 	void Start () {
+		nowtime = 0;
+		count = 0;
 		HP = 3;
+//		Time.captureFramerate = 60;
 		/*----------コンポーネントの習得------------*/
 		audioSource = GetComponent<AudioSource> ();
 		rigidbody = GetComponent<Rigidbody> ();
@@ -70,6 +77,16 @@ public class PlayerScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		nowtime += Time.deltaTime;
+		count++;
+
+		if (nowtime >= 1) {
+			Debug.Log (count);
+			nowtime = 0;
+			count = 0;
+		}
+
+
 		float h = Input.GetAxisRaw ("Horizontal");
 		jumpHeight = anim.GetFloat("JumpHeight");
 		velocity = new Vector3 (h, 0, 0);	// 左右のキー入力からx軸方向の移動量を取得
@@ -123,13 +140,13 @@ public class PlayerScript : MonoBehaviour {
 			transform.rotation = Quaternion.AngleAxis (-90f, Vector3.up);
 			velocity = new Vector3 (-h, 0, 0);
 			velocity *= forwardSpeed;					// 移動速度を掛ける
-			transform.localPosition -= velocity * Time.fixedDeltaTime;
+			transform.localPosition -= velocity * Time.deltaTime;
 		}
 		else if (h > 0) {
 			//anim.SetBool ("Run", true);
 			transform.rotation = Quaternion.AngleAxis (90f, Vector3.up);
 			velocity *= forwardSpeed;						// 移動速度を掛ける
-			transform.localPosition += velocity * Time.fixedDeltaTime;
+			transform.localPosition += velocity * Time.deltaTime;
 		}
 	}
 
@@ -140,7 +157,8 @@ public class PlayerScript : MonoBehaviour {
 				anim.SetBool("Jump", true);
 				touchFloor = false;
 				//rigidbody.useGravity = false;
-				rigidbody.AddForce(transform.up * jumpHeight, ForceMode.Impulse);
+				//rigidbody.AddForce(transform.up * jumpHeight , ForceMode.Impulse);
+				rigidbody.velocity = (transform.up * jumpHeight);
 			}
 	    }
 	}
@@ -171,8 +189,8 @@ public class PlayerScript : MonoBehaviour {
 	//地面についているかの判定も行う
 	void OnTriggerEnter(Collider col){
 		if (col.gameObject.tag == "Enemy") {
-			rigidbody.AddForce(transform.up * jumpHeight * jumpOffset, ForceMode.Impulse);
-			//JumpCol();
+			//rigidbody.AddForce(transform.up * jumpHeight * jumpOffset, ForceMode.Impulse);
+			rigidbody.velocity = (transform.up * jumpHeight);
 			col.transform.position = new Vector3 (-100f,-100f,-100f);
 		}
         // タグがItemの場合、ItemManagerに取得したアイテムを送る
