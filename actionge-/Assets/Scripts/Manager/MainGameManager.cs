@@ -26,6 +26,7 @@ public class MainGameManager : SingletonMonoBehaviour<MainGameManager> {
     }
 
 	private IEnumerator TransitionToEndingScene() {
+		FadeInOutUtil.Instance.FadeIn(changeSceneInterval, Color.blue);
 		yield return new WaitForSeconds(changeSceneInterval);
 		ItemManager.Instance.gameObject.transform.parent = null;
 		Application.LoadLevel("Ending");
