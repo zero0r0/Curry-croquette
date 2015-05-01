@@ -156,6 +156,7 @@ public class PlayerScript : MonoBehaviour {
 			rigidbody.AddForce(transform.up * jumpHeight * jumpOffset, ForceMode.Impulse);
 			//JumpCol();
 			col.transform.position = new Vector3 (-100f,-100f,-100f);
+			EffectManager.Instance.InstantEffect(EffectManager.EffectId.KillEnemy);
 		}
         // タグがItemの場合、ItemManagerに取得したアイテムを送る
         else if (col.tag == "Item") {
