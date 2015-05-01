@@ -5,6 +5,7 @@ public class EndingManager : SingletonMonoBehaviour<EndingManager> {
 
 	// Use this for initialization
 	void Start () {
+		FadeInOutUtil.Instance.FadeOut(1f, Color.blue);
 		if (ItemManager.Instance.CheckCollectAllItmes()) {
 			Debug.Log("Collect All Items");
 		} else {
