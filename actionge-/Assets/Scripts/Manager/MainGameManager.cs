@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 /// <summary>
 /// MainGame1Scene管理クラス
@@ -22,7 +23,6 @@ public class MainGameManager : SingletonMonoBehaviour<MainGameManager> {
     /// </summary>
     public void TouthGoal() {
 		StartCoroutine(TransitionToEndingScene());
-		ItemManager.Instance.ShowItemInfo();
     }
 
 	private IEnumerator TransitionToEndingScene() {

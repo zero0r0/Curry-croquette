@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 using UnityEngine.UI;
-using System.Linq;
 
 /// <summary>
 /// ユーザインタフェース管理用クラス
@@ -11,8 +9,10 @@ public class UIManager : SingletonMonoBehaviour<UIManager> {
 	// プレイヤーの体力UI
     private Image hp;
 
+	// アイテムUI群
 	private ItemBehaviour[] items;
 
+	// HPUIを減らす割合
 	private float hpRate = 0.33f;
 
 	new void Awake() {
@@ -31,9 +31,12 @@ public class UIManager : SingletonMonoBehaviour<UIManager> {
 			(x) => x.gameObject.GetComponent<Image>().color = new Color(1, 1, 1, 1));
     }
 
+	/// <summary>
+	/// プレイヤーのHPのUIを更新する
+	/// </summary>
     public void IncreasePlayerHP() {
 		if (hp.fillAmount > 0.5f)
-        hp.fillAmount -= hpRate;
+		hp.fillAmount -= hpRate;
     }
 
 }

@@ -140,13 +140,13 @@ public class PlayerScript : MonoBehaviour {
 			transform.rotation = Quaternion.AngleAxis (-90f, Vector3.up);
 			velocity = new Vector3 (-h, 0, 0);
 			velocity *= forwardSpeed;					// 移動速度を掛ける
-			transform.localPosition -= velocity * Time.deltaTime;
+			transform.localPosition -= velocity * Time.fixedDeltaTime;
 		}
 		else if (h > 0) {
 			//anim.SetBool ("Run", true);
 			transform.rotation = Quaternion.AngleAxis (90f, Vector3.up);
 			velocity *= forwardSpeed;						// 移動速度を掛ける
-			transform.localPosition += velocity * Time.deltaTime;
+			transform.localPosition += velocity * Time.fixedDeltaTime;
 		}
 	}
 
@@ -189,6 +189,7 @@ public class PlayerScript : MonoBehaviour {
 	//地面についているかの判定も行う
 	void OnTriggerEnter(Collider col){
 		if (col.gameObject.tag == "Enemy") {
+			EffectManager.Instance.InstantEffect(EffectManager.EffectId.KillEnemy, col.gameObject.transform.position);
 			//rigidbody.AddForce(transform.up * jumpHeight * jumpOffset, ForceMode.Impulse);
 			rigidbody.velocity = (transform.up * jumpHeight);
 			touchFloor = false;
@@ -197,6 +198,7 @@ public class PlayerScript : MonoBehaviour {
         // タグがItemの場合、ItemManagerに取得したアイテムを送る
         else if (col.tag == "Item") {
             ItemManager.Instance.SendItem(col.gameObject.GetComponent<ItemBehaviour>().ItemId);
+			EffectManager.Instance.InstantEffect(EffectManager.EffectId.GetItem, col.gameObject.transform.position);
             MainGameManager.Instance.SetObjectToObjectPool(col.gameObject);
 			Voice(VoiceId.Get);
         }

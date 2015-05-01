@@ -46,7 +46,7 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager> {
 	}
 
 	public bool CheckCollectAllItmes() {
-		foreach (Item item in ItemManager.Instance.items) {
+		foreach (Item item in items) {
 			if (item.count == 0)
 				return false;
 		}
@@ -75,13 +75,6 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager> {
 				func(ref items[i]);
 			}
 		}
-		ShowItemInfo();
     }
-	
-	public void ShowItemInfo() {
-		foreach (Item item in items) {
-			Debug.Log(item.itemId.ToString() + ":" + item.count);
-		}
-	}
 
 }
