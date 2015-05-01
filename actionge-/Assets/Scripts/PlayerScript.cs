@@ -177,6 +177,7 @@ public class PlayerScript : MonoBehaviour {
         else if (col.tag == "Item") {
             ItemManager.Instance.SendItem(col.gameObject.GetComponent<ItemBehaviour>().ItemId);
             MainGameManager.Instance.SetObjectToObjectPool(col.gameObject);
+			EffectManager.Instance.InstantEffect(EffectManager.EffectId.ItemGet);
         }
         // タグがGoalの場合、MainGameManagerにエンディング遷移処理を行うよう、指示を出す
         else if (col.tag == "Goal") {

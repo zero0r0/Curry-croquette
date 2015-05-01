@@ -48,10 +48,10 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager> {
 
 		switch (effectId) {
 			case EffectId.ItemGet:
-				func(getItem.particle, Vector3.zero, getItem.se);
+				audioSource.PlayOneShot(getItem.se);
 				break;
 			case EffectId.KillEnemy:
-				func(killEnemy.particle, Vector3.zero, killEnemy.se);
+				audioSource.PlayOneShot(killEnemy.se);
 				break;
 		}
 	}
