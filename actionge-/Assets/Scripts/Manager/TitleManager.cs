@@ -21,21 +21,6 @@ public class TitleManager : MonoBehaviour {
 	void Start () {
 		audioSource = GetComponent<AudioSource> ();
 		audioSource.clip = logoVoice;
-		StartCoroutine(StartSplash());
-	}
-
-	private IEnumerator StartSplash() {
-		FadeInOutUtil.Instance.FadeOut(changeSceneInterval, Color.black);
-		yield return new WaitForSeconds(changeSceneInterval);
-		audioSource.Play();
-		while (true) {
-			yield return new WaitForSeconds(0.01f);
-			if  (!audioSource.isPlaying)
-				break;
-		}
-		FadeInOutUtil.Instance.FadeIn(changeSceneInterval, Color.black);
-		yield return new WaitForSeconds(changeSceneInterval);
-		FadeInOutUtil.Instance.FadeOut(1f, Color.black);
 	}
 	
 	// Update is called once per frame
@@ -48,7 +33,7 @@ public class TitleManager : MonoBehaviour {
 
 	private IEnumerator GameStart(){
 		FadeInOutUtil.Instance.FadeIn(changeSceneInterval, Color.white);
-		yield return new WaitForSeconds(changeSceneInterval);
+		yield return new WaitForSeconds(changeSceneInterval * 2);
 		Application.LoadLevel("mainGame");
 	}
 

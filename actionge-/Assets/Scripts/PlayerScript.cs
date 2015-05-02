@@ -66,6 +66,12 @@ public class PlayerScript : MonoBehaviour {
 
 		orgColHight = col.height;
 		orgVectColCenter = col.center;
+
+		GameObject check = new GameObject("First Check");
+		check = Instantiate(check, transform.position, transform.rotation) as GameObject;
+		check.gameObject.tag = "Check Point";
+		SphereCollider collider = check.AddComponent<SphereCollider>();
+		collider.isTrigger = true;
 	}
 	
 	// Update is called once per frame
@@ -177,6 +183,7 @@ public class PlayerScript : MonoBehaviour {
 			//rigidbody.AddForce(transform.up * jumpHeight * jumpOffset, ForceMode.Impulse);
 			rigidbody.velocity = (transform.up * jumpHeight);
 			touchFloor = false;
+			EffectManager.Instance.InstantEffect(EffectManager.EffectId.KillEnemy, col.transform.position);
 			col.transform.position = new Vector3 (-100f,-100f,-100f);
 		}
         // タグがItemの場合、ItemManagerに取得したアイテムを送る
