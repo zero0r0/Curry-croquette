@@ -10,31 +10,46 @@ public class TitleManager : MonoBehaviour {
     public GameObject inputText;
 	[SerializeField]
 	private AudioClip startVoice;
+	[SerializeField]
+	private AudioClip logoVoice;
+
 	private AudioSource audioSource;
+
+	public float changeSceneInterval = 1f;
 
 	// Use this for initialization
 	void Start () {
 		audioSource = GetComponent<AudioSource> ();
+		audioSource.clip = logoVoice;
+		StartCoroutine(StartSplash());
+	}
+
+	private IEnumerator StartSplash() {
+		FadeInOutUtil.Instance.FadeOut(changeSceneInterval, Color.black);
+		yield return new WaitForSeconds(changeSceneInterval);
+		audioSource.Play();
+		while (true) {
+			yield return new WaitForSeconds(0.01f);
+			if  (!audioSource.isPlaying)
+				break;
+		}
+		FadeInOutUtil.Instance.FadeIn(changeSceneInterval, Color.black);
+		yield return new WaitForSeconds(changeSceneInterval);
+		FadeInOutUtil.Instance.FadeOut(1f, Color.black);
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	    if (Input.anyKeyDown) {
-			audioSource.clip = startVoice;
-			audioSource.Play();
+			audioSource.PlayOneShot(startVoice);
 			StartCoroutine("GameStart");
         }
 	}
 
 	private IEnumerator GameStart(){
-		yield return new WaitForSeconds(1f);
+		FadeInOutUtil.Instance.FadeIn(changeSceneInterval, Color.white);
+		yield return new WaitForSeconds(changeSceneInterval);
 		Application.LoadLevel("mainGame");
 	}
 
-    /// <summary>
-    /// 入力を促す文字を半透明にする
-    /// </summary>
-    private void FadeInOut() {
-
-    }
 }
