@@ -181,7 +181,7 @@ public class PlayerScript : MonoBehaviour {
 			GameObject Respawn = Instantiate(new GameObject("EnemyRespawnPoint"),col.transform.position,col.transform.rotation) as GameObject;
 			RespawnEnemyManager rem = Respawn.AddComponent<RespawnEnemyManager>();
 			rem.RespanEnemy(col.gameObject);
-			col.transform.position = new Vector3 (-100f,-100f,-100f);
+			MainGameManager.Instance.SetObjectToObjectPool(col.gameObject);
 		}
         // タグがItemの場合、ItemManagerに取得したアイテムを送る
         else if (col.tag == "Item") {

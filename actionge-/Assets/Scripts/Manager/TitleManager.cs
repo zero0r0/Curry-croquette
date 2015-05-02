@@ -6,9 +6,6 @@ using System.Collections;
 /// </summary>
 public class TitleManager : MonoBehaviour {
 
-    // 入力を促すテキスト
-    public GameObject inputText;
-	[SerializeField]
 	private AudioClip startVoice;
 	[SerializeField]
 	private AudioClip logoVoice;
@@ -27,14 +24,14 @@ public class TitleManager : MonoBehaviour {
 	void Update () {
 	    if (Input.anyKeyDown) {
 			audioSource.PlayOneShot(startVoice);
-			StartCoroutine("GameStart");
+			StartCoroutine(GameStart());
         }
 	}
 
 	private IEnumerator GameStart(){
 		FadeInOutUtil.Instance.FadeIn(changeSceneInterval, Color.white);
 		yield return new WaitForSeconds(changeSceneInterval * 2);
-		Application.LoadLevel("mainGame");
+		Application.LoadLevel("Tutorial");
 	}
 
 }
