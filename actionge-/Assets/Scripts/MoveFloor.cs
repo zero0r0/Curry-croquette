@@ -12,6 +12,8 @@ public class MoveFloor : MonoBehaviour {
     private List<GameObject> ride = new List<GameObject>();  //床に乗っているオブジェクト
 
 
+
+
 	// Update is called once per frame
 	void Update () {
 	    

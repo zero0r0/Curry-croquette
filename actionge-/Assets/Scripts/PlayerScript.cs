@@ -175,13 +175,13 @@ public class PlayerScript : MonoBehaviour {
 	void OnTriggerEnter(Collider col){
 		if (col.gameObject.tag == "Enemy") {
 			touchFloor = false;
-			//EffectManager.Instance.InstantEffect(EffectManager.EffectId.KillEnemy, col.gameObject.transform.position);
+			EffectManager.Instance.InstantEffect(EffectManager.EffectId.KillEnemy, col.gameObject.transform.position);
 			//rigidbody.AddForce(transform.up * jumpHeight * jumpOffset, ForceMode.Impulse);
 			rigidbody.velocity = (transform.up * jumpHeight);
 			GameObject Respawn = Instantiate(new GameObject("EnemyRespawnPoint"),col.transform.position,col.transform.rotation) as GameObject;
 			RespawnEnemyManager rem = Respawn.AddComponent<RespawnEnemyManager>();
 			rem.RespanEnemy(col.gameObject);
-			col.transform.position = new Vector3 (-100f,-100f,-100f);
+			MainGameManager.Instance.SetObjectToObjectPool(col.gameObject);
 		}
         // タグがItemの場合、ItemManagerに取得したアイテムを送る
         else if (col.tag == "Item") {
@@ -203,7 +203,7 @@ public class PlayerScript : MonoBehaviour {
 	void OnCollisionStay(Collision col){
 		RaycastHit hit;
 		if (Physics.Raycast (transform.position + Vector3.up, -Vector3.up, out hit, 1.2f)) {
-			Debug.Log(touchFloor);
+			//Debug.Log(touchFloor);
 			if (col.gameObject.tag == "Floor")
 				touchFloor = true;
 			else 

@@ -20,6 +20,7 @@ public class MainGameManager : SingletonMonoBehaviour<MainGameManager> {
 	public float changeSceneInterval = 3f;
 
 	// 最後に通過したチェックポイント
+	[SerializeField]
 	private Transform latestCheckPoint;
 
     new void Awake() {
@@ -73,12 +74,12 @@ public class MainGameManager : SingletonMonoBehaviour<MainGameManager> {
 
 		FadeInOutUtil.Instance.FadeOut(changeSceneInterval, Color.black);
 		AudioManager.Instance.PlayBGM();
-		/*
+
 		player.transform.position = latestCheckPoint.position;
 		(player.GetComponent(typeof(PlayerScript)) as PlayerScript).enabled = true;
 		player.GetComponent<PlayerScript>().Respawn();
-		*/
-		Application.LoadLevel (Application.loadedLevel);
+
+		//Application.LoadLevel (Application.loadedLevel);
 	}
 
 	public void SetObjectToObjectPool(GameObject obj) {
