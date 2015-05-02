@@ -13,7 +13,7 @@ public class UIManager : SingletonMonoBehaviour<UIManager> {
 	private ItemBehaviour[] items;
 
 	// HPUIを減らす割合
-	private float hpRate = 0.33f;
+	private float hpRate = 1 / 3f;
 
 	new void Awake() {
 		CheckInstance();
@@ -35,8 +35,11 @@ public class UIManager : SingletonMonoBehaviour<UIManager> {
 	/// プレイヤーのHPのUIを更新する
 	/// </summary>
     public void IncreasePlayerHP() {
-		if (hp.fillAmount > 0.5f)
 		hp.fillAmount -= hpRate;
     }
+
+	public void PlayerRespawn() {
+		hp.fillAmount = 1;
+	}
 
 }

@@ -32,7 +32,6 @@ public class FadeInOutUtil : SingletonMonoBehaviour<FadeInOutUtil> {
 	IEnumerator StartFade(float fadeTime) {
 		float nowTime = 0f;
 		float fadeRate = 1 / fadeTime / 30;
-
 		if (now.a == 1)
 			fadeRate *= -1;
 

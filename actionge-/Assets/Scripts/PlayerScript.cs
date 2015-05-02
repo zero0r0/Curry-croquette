@@ -187,9 +187,12 @@ public class PlayerScript : MonoBehaviour {
 			Voice(VoiceId.Get);
         }
         // タグがGoalの場合、MainGameManagerにエンディング遷移処理を行うよう、指示を出す
-		else if (col.tag == "Goal" && ItemManager.Instance.CheckCollectAllItmes()) {
+		else if (col.tag == "Goal" && ItemManager.Instance.CheckCollectNecessaryItems()) {
             MainGameManager.Instance.TouthGoal();
         }
+		else if (col.tag == "Check Point") {
+			MainGameManager.Instance.TouchCheckPoint(col.transform);
+		}
 
 	}
 
@@ -215,11 +218,12 @@ public class PlayerScript : MonoBehaviour {
 			UIManager.Instance.IncreasePlayerHP ();
 			Voice(VoiceId.Damage);
 			anim.SetBool ("Damage", true);
-		}
-		// 体力が0以下になった時、ゲームオーバー処理を行う
-		if (HP <= 0 && anim.GetBool("Damage")) {
-			MainGameManager.Instance.ToGameOver();
-			anim.SetTrigger("Die");
+			// 体力が0以下になった時、ゲームオーバー処理を行う
+			if (HP <= 0) {
+				MainGameManager.Instance.ToGameOver();
+				anim.SetTrigger("Die");
+				this.enabled = false;
+			}
 		}
     }
 
@@ -239,6 +243,12 @@ public class PlayerScript : MonoBehaviour {
 			audioSource.Play();
 		}
 
+	}
+
+	public void Respawn() {
+		this.HP = 3;
+		anim.SetTrigger("Respawn");
+		UIManager.Instance.PlayerRespawn();
 	}
 
 }

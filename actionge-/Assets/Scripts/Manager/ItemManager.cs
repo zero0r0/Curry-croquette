@@ -8,7 +8,7 @@ using System.Reflection;
 public class ItemManager : SingletonMonoBehaviour<ItemManager> {
 
 	// アイテムID
-	public enum ItemId { Carrot, Potato, Onion, Mince, Curry, Croquette }
+	public enum ItemId { Carrot, Potato, Onion, Mince, Curry, Croquette, Umai, Katsu, Choco }
 
 	// アイテム構造体
 	public struct Item {
@@ -25,6 +25,11 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager> {
 		new Item(ItemId.Potato),
 		new Item(ItemId.Onion),
 		new Item(ItemId.Mince),
+		new Item(ItemId.Curry),
+		new Item(ItemId.Croquette),
+		new Item(ItemId.Umai),
+		new Item(ItemId.Katsu),
+		new Item(ItemId.Choco)
 	};
 
 	new void Awake() {
@@ -49,6 +54,24 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager> {
 		foreach (Item item in items) {
 			if (item.count == 0)
 				return false;
+		}
+		return true;
+	}
+
+	public bool CheckCollectNecessaryItems() {
+		foreach (Item item in items) {
+			if (item.itemId == ItemId.Carrot && item.count == 0)
+				return false;
+			else if (item.itemId == ItemId.Potato && item.count == 0)
+				return false;
+			else if (item.itemId == ItemId.Onion && item.count == 0)
+				return false;
+			else if (item.itemId == ItemId.Mince && item.count == 0)
+				return false;
+			//else if (item.itemId == ItemId.Curry && item.count == 0)
+			//	return false;
+			//else if (item.itemId == ItemId.Croquette && item.count == 0)
+			//	return false;
 		}
 		return true;
 	}

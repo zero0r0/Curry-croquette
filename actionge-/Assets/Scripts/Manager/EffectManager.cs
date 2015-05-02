@@ -4,7 +4,7 @@ using System.Collections;
 [RequireComponent(typeof(AudioSource))]
 public class EffectManager : SingletonMonoBehaviour<EffectManager> {
 
-	public enum EffectId { GetItem, KillEnemy, GetSweet, }
+	public enum EffectId { GetItem, KillEnemy, GetSweet, GameOver }
 
 	[System.Serializable]
 	public struct Effect {
@@ -16,6 +16,7 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager> {
 	public Effect getItem;
 	public Effect killEnemy;
 	public Effect getSweet;
+	public Effect gameOver;
 
 	public float destroyInterval = 2;
 
@@ -62,6 +63,9 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager> {
 				break;
 			case EffectId.GetSweet:
 				audioSource.PlayOneShot(getSweet.se);
+				break;
+			case EffectId.GameOver:
+				audioSource.PlayOneShot(gameOver.se);
 				break;
 		}
 	}
