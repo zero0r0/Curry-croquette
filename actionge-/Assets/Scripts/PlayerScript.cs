@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class PlayerScript : MonoBehaviour {
@@ -70,6 +70,8 @@ public class PlayerScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+		Debug.Log (touchFloor);
 		float h = Input.GetAxisRaw ("Horizontal");
 		jumpHeight = anim.GetFloat("JumpHeight");
 		velocity = new Vector3 (h, 0, 0);	// 左右のキー入力からx軸方向の移動量を取得
@@ -92,14 +94,13 @@ public class PlayerScript : MonoBehaviour {
 		}
 		//アニメーションのステートがJumpの最中
 		if (currentBaseState.nameHash == jumpState) {
-			touchFloor = false;
 			if(!anim.IsInTransition(0))
 			{	
 				anim.SetBool("Jump", false);
 				if(Mathf.Abs(h)!=0 && touchFloor){
 					anim.SetBool("Run",true);
 				}
-			} 
+			}
 		}
 		// レイキャストをキャラクターのセンターから落とす
 		//キャラがジャンプ可能かどうかを判別
@@ -173,10 +174,13 @@ public class PlayerScript : MonoBehaviour {
 	//地面についているかの判定も行う
 	void OnTriggerEnter(Collider col){
 		if (col.gameObject.tag == "Enemy") {
+			touchFloor = false;
 			//EffectManager.Instance.InstantEffect(EffectManager.EffectId.KillEnemy, col.gameObject.transform.position);
 			//rigidbody.AddForce(transform.up * jumpHeight * jumpOffset, ForceMode.Impulse);
 			rigidbody.velocity = (transform.up * jumpHeight);
-			touchFloor = false;
+			GameObject Respawn = Instantiate(new GameObject("EnemyRespawnPoint"),col.transform.position,col.transform.rotation) as GameObject;
+			RespawnEnemyManager rem = Respawn.AddComponent<RespawnEnemyManager>();
+			rem.RespanEnemy(col.gameObject);
 			col.transform.position = new Vector3 (-100f,-100f,-100f);
 		}
         // タグがItemの場合、ItemManagerに取得したアイテムを送る
@@ -199,6 +203,7 @@ public class PlayerScript : MonoBehaviour {
 	void OnCollisionStay(Collision col){
 		RaycastHit hit;
 		if (Physics.Raycast (transform.position + Vector3.up, -Vector3.up, out hit, 1.2f)) {
+			Debug.Log(touchFloor);
 			if (col.gameObject.tag == "Floor")
 				touchFloor = true;
 			else 
@@ -206,6 +211,22 @@ public class PlayerScript : MonoBehaviour {
 		}
 	}
 
+	void OnCollisionEnter(Collision col){
+		RaycastHit hit;
+		if (col.gameObject.tag == "Floor")
+			touchFloor = true;
+		if (Physics.Raycast (transform.position + Vector3.up, -Vector3.up, out hit, 1.2f)) {
+			if (col.gameObject.tag == "Floor")
+				touchFloor = true;
+			else 
+				touchFloor = false;
+		}
+	}
+
+	void OnCollisionExit(Collision col){
+		if (col.gameObject.tag == "Floor")
+			touchFloor = false;
+	}
 
 
     /// <summary>
