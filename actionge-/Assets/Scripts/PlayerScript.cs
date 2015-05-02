@@ -52,14 +52,8 @@ public class PlayerScript : MonoBehaviour {
 	//PlayerのAudioSource
 	private AudioSource audioSource;
 
-	float nowtime;
-	int count;
-
-
 	// Use this for initialization
 	void Start () {
-		nowtime = 0;
-		count = 0;
 		HP = 3;
 //		Time.captureFramerate = 60;
 		/*----------コンポーネントの習得-------------------------------*/
@@ -76,16 +70,6 @@ public class PlayerScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		nowtime += Time.deltaTime;
-		count++;
-
-		if (nowtime >= 1) {
-			Debug.Log (count);
-			nowtime = 0;
-			count = 0;
-		}
-
-
 		float h = Input.GetAxisRaw ("Horizontal");
 		jumpHeight = anim.GetFloat("JumpHeight");
 		velocity = new Vector3 (h, 0, 0);	// 左右のキー入力からx軸方向の移動量を取得
@@ -203,9 +187,12 @@ public class PlayerScript : MonoBehaviour {
 			Voice(VoiceId.Get);
         }
         // タグがGoalの場合、MainGameManagerにエンディング遷移処理を行うよう、指示を出す
-		else if (col.tag == "Goal" && ItemManager.Instance.CheckCollectAllItmes()) {
+		else if (col.tag == "Goal" && ItemManager.Instance.CheckCollectNecessaryItems()) {
             MainGameManager.Instance.TouthGoal();
         }
+		else if (col.tag == "Check Point") {
+			MainGameManager.Instance.TouchCheckPoint(col.transform);
+		}
 
 	}
 
@@ -226,11 +213,17 @@ public class PlayerScript : MonoBehaviour {
     /// </summary>
     /// <param name="damange">ダメージ量</param>
     public void ApplyDamage(int damange) {
-		if (!anim.GetBool("Damage")) {
+		if (!anim.GetBool("Damage") && HP > 0) {
 			HP -= damange;
 			UIManager.Instance.IncreasePlayerHP ();
 			Voice(VoiceId.Damage);
 			anim.SetBool ("Damage", true);
+			// 体力が0以下になった時、ゲームオーバー処理を行う
+			if (HP <= 0) {
+				MainGameManager.Instance.ToGameOver();
+				anim.SetTrigger("Die");
+				this.enabled = false;
+			}
 		}
     }
 
@@ -245,11 +238,17 @@ public class PlayerScript : MonoBehaviour {
 		}
 		if (v == VoiceId.Damage) {
 			int n;
-			n = Random.Range(0,5);
+			n = Random.Range(0,4);
 			this.audioSource.clip = damageVoice[n];
 			audioSource.Play();
 		}
 
+	}
+
+	public void Respawn() {
+		this.HP = 3;
+		anim.SetTrigger("Respawn");
+		UIManager.Instance.PlayerRespawn();
 	}
 
 }
