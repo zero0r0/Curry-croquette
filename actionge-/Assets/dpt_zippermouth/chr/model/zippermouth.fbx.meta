@@ -50,7 +50,7 @@ ModelImporter:
     bakeSimulation: 0
     optimizeGameObjects: 0
     motionNodeName: 
-    animationCompression: 1
+    animationCompression: 3
     animationRotationError: .5
     animationPositionError: .5
     animationScaleError: .5
@@ -83,8 +83,116 @@ ModelImporter:
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
-    human: []
-    skeleton: []
+    human:
+    - boneName: sk
+      humanName: Hips
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: head
+      humanName: Spine
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: mouth
+      humanName: Neck
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: zip
+      humanName: LeftShoulder
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: zip_02
+      humanName: LeftUpperArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: zip_End6
+      humanName: LeftLowerArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    skeleton:
+    - name: zippermouth(Clone)
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+      transformModified: 1
+    - name: mdl
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+      transformModified: 1
+    - name: body_mdl
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+      transformModified: 1
+    - name: tooth_mdl
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+      transformModified: 1
+    - name: zip_mdl
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+      transformModified: 1
+    - name: sk
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+      transformModified: 1
+    - name: head
+      position: {x: 0, y: .360999852, z: 0}
+      rotation: {x: .533485055, y: 0, z: 1.40129846e-45, w: .845809579}
+      scale: {x: 1, y: 1, z: 1}
+      transformModified: 1
+    - name: mouth
+      position: {x: 1.40129846e-45, y: .000111793532, z: -.38331005}
+      rotation: {x: -.646512926, y: .286393195, z: -.646512926, w: .286393195}
+      scale: {x: 1, y: 1, z: 1}
+      transformModified: 1
+    - name: mouth_End
+      position: {x: -.792391598, y: 3.85802497e-17, z: -1.75946279e-16}
+      rotation: {x: .314160734, y: .949369848, z: 3.565254e-15, w: -1.05790188e-14}
+      scale: {x: 1, y: 1, z: 1}
+      transformModified: 1
+    - name: zip
+      position: {x: -.0845905393, y: -.00424502697, z: -.351289123}
+      rotation: {x: 5.96046306e-08, y: -.141066372, z: 8.94069458e-08, w: .990000129}
+      scale: {x: 1, y: 1, z: 1}
+      transformModified: 1
+    - name: zip_02
+      position: {x: -.0260964315, y: 0, z: -1.88737916e-17}
+      rotation: {x: -2.81725079e-08, y: .104833059, z: -5.21540642e-08, w: .994489908}
+      scale: {x: 1, y: 1, z: 1}
+      transformModified: 1
+    - name: zip_End6
+      position: {x: -.397568315, y: -7.81597005e-16, z: 8.88178367e-17}
+      rotation: {x: .0012626847, y: .707105696, z: -.0012626847, w: .707105696}
+      scale: {x: 1, y: 1, z: 1}
+      transformModified: 1
     armTwist: .5
     foreArmTwist: .5
     upperLegTwist: .5
@@ -94,7 +202,7 @@ ModelImporter:
     feetSpacing: 0
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 1
+  animationType: 3
   additionalBone: 0
   userData: 
   assetBundleName: 

@@ -189,7 +189,7 @@ public class PlayerScript : MonoBehaviour {
 	//地面についているかの判定も行う
 	void OnTriggerEnter(Collider col){
 		if (col.gameObject.tag == "Enemy") {
-			EffectManager.Instance.InstantEffect(EffectManager.EffectId.KillEnemy, col.gameObject.transform.position);
+			//EffectManager.Instance.InstantEffect(EffectManager.EffectId.KillEnemy, col.gameObject.transform.position);
 			//rigidbody.AddForce(transform.up * jumpHeight * jumpOffset, ForceMode.Impulse);
 			rigidbody.velocity = (transform.up * jumpHeight);
 			touchFloor = false;
