@@ -49,7 +49,7 @@ public class TitleManager : MonoBehaviour {
 	private IEnumerator GameStart(){
 		FadeInOutUtil.Instance.FadeIn(changeSceneInterval, Color.white);
 		yield return new WaitForSeconds(changeSceneInterval);
-		Application.LoadLevel("mainGame");
+		Application.LoadLevel("Stage");
 	}
 
 }

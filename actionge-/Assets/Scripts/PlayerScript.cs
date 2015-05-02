@@ -78,7 +78,7 @@ public class PlayerScript : MonoBehaviour {
 		currentBaseState = anim.GetCurrentAnimatorStateInfo(0);	// 参照用のステート変数にBase Layer (0)の現在のステートを設定する
 		
 		//方向キーの入力を受け付け次第、走るアニメーション再生
-		if (Mathf.Abs (h) != 0 && !anim.GetBool ("Jump")) {
+		if (Mathf.Abs (h) != 0 && !anim.GetBool("Jump")) {
 			move(h);
 		}
 		else 
@@ -117,7 +117,7 @@ public class PlayerScript : MonoBehaviour {
 
 	/*移動用関数*/
 	void move(float h){
-		if (currentBaseState.nameHash == idleState && touchFloor) {
+		if (/*currentBaseState.nameHash == idleState && */touchFloor) {
 			anim.SetBool ("Run", true);
 		}
 		if (h < 0) {
@@ -137,7 +137,7 @@ public class PlayerScript : MonoBehaviour {
 
 	/*ジャンプ動作の関数 key判定条件も含む*/
 	void jumpAnimation(){
-		if(Input.GetKeyDown(KeyCode.Space) && touchFloor){
+		if((Input.GetKeyDown(KeyCode.JoystickButton0) || Input.GetKeyDown(KeyCode.Space) && touchFloor)){
 			if(!anim.IsInTransition(0)){
 				anim.SetBool("Jump", true);
 				touchFloor = false;
