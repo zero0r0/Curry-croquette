@@ -41,7 +41,7 @@ public class ZipMonster : MonoBehaviour {
 	//移動関数
 	void Move(){
 		//if (Vector3.Distance (this.transform.position, player.transform.position) <= 6f && 0 < Vector3.Distance (this.transform.position, player.transform.position)) {
-		if(Physics.Raycast(this.transform.position, Vector3.forward, 100f)){
+		if(Physics.Raycast(this.transform.position, this.transform.forward, 10f)){
 			Chase ();
 		} 
 		else {
