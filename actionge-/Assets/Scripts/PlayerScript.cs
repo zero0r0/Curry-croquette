@@ -38,6 +38,7 @@ public class PlayerScript : MonoBehaviour {
 
 	//jumpフラグ
 	bool touchFloor;
+	bool touchEnemy;
 
 	//ボイスID
 	public enum VoiceId {Jump, Get, Damage};
@@ -52,8 +53,11 @@ public class PlayerScript : MonoBehaviour {
 	//PlayerのAudioSource
 	private AudioSource audioSource;
 
+	public GameObject enemyRespawn;
+
 	// Use this for initialization
 	void Start () {
+		touchEnemy = false;
 		HP = 3;
 //		Time.captureFramerate = 60;
 		/*----------コンポーネントの習得-------------------------------*/
@@ -66,12 +70,16 @@ public class PlayerScript : MonoBehaviour {
 
 		orgColHight = col.height;
 		orgVectColCenter = col.center;
+
+		GameObject check = Instantiate (new GameObject ("First Check Point"), transform.position, transform.rotation) as GameObject;
+		check.tag = "Check Point";
+		SphereCollider collider = check.AddComponent<SphereCollider> ();
+		collider.isTrigger = true;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-		Debug.Log (touchFloor);
 		float h = Input.GetAxisRaw ("Horizontal");
 		jumpHeight = anim.GetFloat("JumpHeight");
 		velocity = new Vector3 (h, 0, 0);	// 左右のキー入力からx軸方向の移動量を取得
@@ -137,7 +145,8 @@ public class PlayerScript : MonoBehaviour {
 
 	/*ジャンプ動作の関数 key判定条件も含む*/
 	void jumpAnimation(){
-		if((Input.GetKeyDown(KeyCode.JoystickButton0) || Input.GetKeyDown(KeyCode.Space) && touchFloor)){
+		//if((Input.GetKeyDown(KeyCode.JoystickButton0) || Input.GetButtonDown("Jump") && touchFloor)){
+		if  (Input.GetButtonDown ("Jump") && (touchFloor || touchEnemy)) {
 			if(!anim.IsInTransition(0)){
 				anim.SetBool("Jump", true);
 				touchFloor = false;
@@ -178,7 +187,7 @@ public class PlayerScript : MonoBehaviour {
 			EffectManager.Instance.InstantEffect(EffectManager.EffectId.KillEnemy, col.gameObject.transform.position);
 			//rigidbody.AddForce(transform.up * jumpHeight * jumpOffset, ForceMode.Impulse);
 			rigidbody.velocity = (transform.up * jumpHeight);
-			GameObject Respawn = Instantiate(new GameObject("EnemyRespawnPoint"),col.transform.position,col.transform.rotation) as GameObject;
+			GameObject Respawn = Instantiate(enemyRespawn,col.transform.position,col.transform.rotation) as GameObject;
 			RespawnEnemyManager rem = Respawn.AddComponent<RespawnEnemyManager>();
 			rem.RespanEnemy(col.gameObject);
 			MainGameManager.Instance.SetObjectToObjectPool(col.gameObject);
@@ -191,10 +200,11 @@ public class PlayerScript : MonoBehaviour {
 			Voice(VoiceId.Get);
         }
         // タグがGoalの場合、MainGameManagerにエンディング遷移処理を行うよう、指示を出す
-		else if (col.tag == "Goal" && ItemManager.Instance.CheckCollectNecessaryItems()) {
+		else if (col.tag == "Goal") {
             MainGameManager.Instance.TouthGoal();
         }
 		else if (col.tag == "Check Point") {
+			EffectManager.Instance.InstantEffect(EffectManager.EffectId.CheckPoint, this.transform.position);
 			MainGameManager.Instance.TouchCheckPoint(col.transform);
 		}
 
@@ -221,11 +231,18 @@ public class PlayerScript : MonoBehaviour {
 			else 
 				touchFloor = false;
 		}
+		if (col.gameObject.tag == "Enemy")
+			touchEnemy = true;
+		else 
+			touchEnemy = false;
+
 	}
 
 	void OnCollisionExit(Collision col){
 		if (col.gameObject.tag == "Floor")
 			touchFloor = false;
+		if (col.gameObject.tag == "Enemy")
+			touchEnemy = false;
 	}
 
 

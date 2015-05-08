@@ -42,9 +42,14 @@ public class EndingManager : SingletonMonoBehaviour<EndingManager> {
 		AudioManager.Instance.PlayBGM();
 		yield return new WaitForSeconds(resultInterval);
 		ShowResult();
+		yield return new WaitForSeconds (resultInterval + 10f);
+		Application.LoadLevel ("Title");
 	}
 
+
+
+
 	private void ShowResult() {
-		result.SetActive(true);
+//		result.SetActive(true);
 	}
 }

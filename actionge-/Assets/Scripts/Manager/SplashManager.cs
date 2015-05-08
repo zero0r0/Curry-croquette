@@ -10,6 +10,7 @@ public class SplashManager : SingletonMonoBehaviour<SplashManager> {
 	private AudioSource audioSource;
 
 	void Start() {
+		Cursor.visible = false;
 		audioSource = GetComponent<AudioSource>();
 		audioSource.clip = logoVoice;
 		StartCoroutine(StartSplash());

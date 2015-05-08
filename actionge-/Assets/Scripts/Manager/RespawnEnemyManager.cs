@@ -3,17 +3,7 @@ using System.Collections;
 
 public class RespawnEnemyManager : MonoBehaviour {
 
-	GameObject obj;
-
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+	private GameObject obj;
 
 	public void RespanEnemy(GameObject enemy){
 		obj = enemy;
@@ -21,5 +11,6 @@ public class RespawnEnemyManager : MonoBehaviour {
 
 	void OnBecameInvisible() {
 		obj.transform.position = this.transform.position;
+		Destroy (this.gameObject);
 	}
 }

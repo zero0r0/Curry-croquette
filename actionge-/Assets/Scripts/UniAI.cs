@@ -17,7 +17,7 @@ public class UniAI : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		time += Time.deltaTime;
-		rand = Random.Range(0,4);
+		rand = Random.Range(0,3);
 		if (time > 5) {
 			Instantiate(asset[rand],this.transform.position + new Vector3 (0,2.5f,0),this.transform.rotation);
 			time = 0;

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class NewMoveFloor2 : MonoBehaviour {
@@ -15,6 +15,7 @@ public class NewMoveFloor2 : MonoBehaviour {
 	private float speed;
 	
 	private Vector3 startPos;
+	private float nowTime = 0f;
 
 	bool touch;
 
@@ -29,6 +30,12 @@ public class NewMoveFloor2 : MonoBehaviour {
 	void Update () {
 		if(touch)
 			Move ();
+		if (!touch)
+			nowTime += Time.deltaTime;
+		if (nowTime >= 4f){
+			this.transform.position = startPos;
+			nowTime = 0f;
+		}
 	}
 	
 	void Move(){
@@ -52,6 +59,7 @@ public class NewMoveFloor2 : MonoBehaviour {
 	void OnCollisionExit(Collision col){
 		if (col.gameObject.tag == "Player") {
 			col.transform.parent = null;
+			touch = false;
 		}
 	}
 }
