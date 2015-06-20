@@ -9,9 +9,7 @@ public class KinokoAI : MonoBehaviour {
 	private float speed;
 	[SerializeField]
 	private int speedLevel;
-	
-	//方向転換のtimer
-	//public float time;
+
 
 	//前に進むときのフラグ。bool型
 	private bool forward;
@@ -71,6 +69,14 @@ public class KinokoAI : MonoBehaviour {
 	void OnCollisionEnter(Collision col){
 		if (col.gameObject.tag == "Player") {
             col.gameObject.GetComponent<PlayerScript>().ApplyDamage(1);
+			if(forward){
+				transform.rotation = Quaternion.AngleAxis (-90f, Vector3.up);
+				forward = false;
+			}
+			else{
+				transform.rotation = Quaternion.AngleAxis (90f, Vector3.up);
+				forward = true;
+			}
 		}
 	}
 

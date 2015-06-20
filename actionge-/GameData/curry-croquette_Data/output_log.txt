@@ -16,7 +16,7 @@ Platform assembly: C:\Users\rei\Documents\Curry-croquette\actionge-\GameData\cur
 Loading C:\Users\rei\Documents\Curry-croquette\actionge-\GameData\curry-croquette_Data\Managed\Assembly-UnityScript-firstpass.dll into Unity Child Domain
 Platform assembly: C:\Users\rei\Documents\Curry-croquette\actionge-\GameData\curry-croquette_Data\Managed\UnityEngine.UI.dll (this message is harmless)
 Loading C:\Users\rei\Documents\Curry-croquette\actionge-\GameData\curry-croquette_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
-- Completed reload, in  0.391 seconds
+- Completed reload, in  0.177 seconds
 desktop: 1366x768 60Hz; virtual: 1366x768 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
@@ -24,24 +24,24 @@ desktop: 1366x768 60Hz; virtual: 1366x768 at 0,0
 Platform assembly: C:\Users\rei\Documents\Curry-croquette\actionge-\GameData\curry-croquette_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: C:\Users\rei\Documents\Curry-croquette\actionge-\GameData\curry-croquette_Data\Managed\System.dll (this message is harmless)
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: 22a4 -> priority: 1 
-  Thread -> id: 1a48 -> priority: 1 
+  Thread -> id: 870 -> priority: 1 
+  Thread -> id: 1c3c -> priority: 1 
 Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 12.119672 ms
+UnloadTime: 12.912545 ms
 
-Unloading 6 unused Assets to reduce memory usage. Loaded Objects now: 681.
-Total: 0.756089 ms (FindLiveObjects: 0.110762 ms CreateObjectMapping: 0.068424 ms MarkObjects: 0.545684 ms  DeleteObjects: 0.028652 ms)
+Unloading 4 unused Assets to reduce memory usage. Loaded Objects now: 683.
+Total: 0.745398 ms (FindLiveObjects: 0.106057 ms CreateObjectMapping: 0.069279 ms MarkObjects: 0.547395 ms  DeleteObjects: 0.020954 ms)
 
 Unloading 4 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 1.642185 ms
+UnloadTime: 1.566919 ms
 NullReferenceException: Object reference not set to an instance of an object
   at UIManager.Awake () [0x00000] in <filename unknown>:0 
  
 (Filename:  Line: -1)
 
 
-Unloading 6 unused Assets to reduce memory usage. Loaded Objects now: 821.
-Total: 0.932710 ms (FindLiveObjects: 0.109051 ms CreateObjectMapping: 0.060726 ms MarkObjects: 0.725298 ms  DeleteObjects: 0.036350 ms)
+Unloading 6 unused Assets to reduce memory usage. Loaded Objects now: 823.
+Total: 0.883958 ms (FindLiveObjects: 0.093228 ms CreateObjectMapping: 0.058588 ms MarkObjects: 0.694935 ms  DeleteObjects: 0.035495 ms)
 
 Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
 NullReferenceException: Object reference not set to an instance of an object
@@ -55,10 +55,20 @@ NullReferenceException
  
 (Filename:  Line: -1)
 
-UnloadTime: 19.713924 ms
+UnloadTime: 15.660213 ms
 
-Unloading 12 unused Assets to reduce memory usage. Loaded Objects now: 3584.
-Total: 2.234056 ms (FindLiveObjects: 0.401138 ms CreateObjectMapping: 0.177475 ms MarkObjects: 1.154661 ms  DeleteObjects: 0.499070 ms)
+Unloading 14 unused Assets to reduce memory usage. Loaded Objects now: 3584.
+Total: 2.181028 ms (FindLiveObjects: 0.392157 ms CreateObjectMapping: 0.171488 ms MarkObjects: 1.148247 ms  DeleteObjects: 0.466996 ms)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at RespawnEnemyManager.OnBecameInvisible () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at RespawnEnemyManager.OnBecameInvisible () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
 
 NullReferenceException: Object reference not set to an instance of an object
   at RespawnEnemyManager.OnBecameInvisible () [0x00000] in <filename unknown>:0 
@@ -74,4 +84,25 @@ NullReferenceException: Object reference not set to an instance of an object
   at RespawnEnemyManager.OnBecameInvisible () [0x00000] in <filename unknown>:0 
  
 (Filename:  Line: -1)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at RespawnEnemyManager.OnBecameInvisible () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at RespawnEnemyManager.OnBecameInvisible () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
+NullReferenceException: Object reference not set to an instance of an object
+  at RespawnEnemyManager.OnBecameInvisible () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+UnloadTime: 10.473214 ms
+
+Unloading 315 unused Assets to reduce memory usage. Loaded Objects now: 1473.
+Total: 8.237446 ms (FindLiveObjects: 0.221951 ms CreateObjectMapping: 0.121025 ms MarkObjects: 1.122588 ms  DeleteObjects: 6.770170 ms)
 

@@ -13,8 +13,6 @@ public class PlayerScript : MonoBehaviour {
 	public float forwardSpeed;
 	public int HP;
 
-	// キャラクターの移動量
-	private Vector3 velocity;
 	//rigidbody
 	private Rigidbody rigidbody;
 
@@ -37,8 +35,7 @@ public class PlayerScript : MonoBehaviour {
 	static int damaState = Animator.StringToHash ("Base Layer.Damage");
 
 	//jumpフラグ
-	bool touchFloor;
-	bool touchEnemy;
+	bool jumpFlag;
 
 	//ボイスID
 	public enum VoiceId {Jump, Get, Damage};
@@ -57,9 +54,9 @@ public class PlayerScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		touchEnemy = false;
+		jumpFlag = false;
 		HP = 3;
-//		Time.captureFramerate = 60;
+
 		/*----------コンポーネントの習得-------------------------------*/
 		audioSource = GetComponent<AudioSource> ();
 		rigidbody = GetComponent<Rigidbody> ();
@@ -82,34 +79,32 @@ public class PlayerScript : MonoBehaviour {
 
 		float h = Input.GetAxisRaw ("Horizontal");
 		jumpHeight = anim.GetFloat("JumpHeight");
-		velocity = new Vector3 (h, 0, 0);	// 左右のキー入力からx軸方向の移動量を取得
 		currentBaseState = anim.GetCurrentAnimatorStateInfo(0);	// 参照用のステート変数にBase Layer (0)の現在のステートを設定する
 		
 		//方向キーの入力を受け付け次第、走るアニメーション再生
-		if (Mathf.Abs (h) != 0 && !anim.GetBool("Jump")) {
+		if (Mathf.Abs (h) != 0) {
 			move(h);
 		}
 		else 
 			anim.SetBool ("Run", false);
 
-		//アニメーションのステートがIdleの最中
-		if (currentBaseState.nameHash == idleState) { 
-			jumpAnimation();
+		if (currentBaseState.nameHash == locoState || currentBaseState.nameHash == idleState) {
+			//if((Input.GetKeyDown(KeyCode.JoystickButton0) || Input.GetButtonDown("Jump") && touchFloor)){
+			if  (Input.GetButtonDown ("Jump") && (jumpFlag)) {
+				jumpAnimation();
+			}
 		}
-		//アニメーションのステートがLocomotionの最中
-		if (currentBaseState.nameHash == locoState) {
-			jumpAnimation();
-		}
-		//アニメーションのステートがJumpの最中
+
+/*		//アニメーションのステートがJumpの最中
 		if (currentBaseState.nameHash == jumpState) {
 			if(!anim.IsInTransition(0))
 			{	
-				anim.SetBool("Jump", false);
-				if(Mathf.Abs(h)!=0 && touchFloor){
+				if(Mathf.Abs(h)!=0 && jumpFlag){
 					anim.SetBool("Run",true);
 				}
 			}
 		}
+*/
 		// レイキャストをキャラクターのセンターから落とす
 		//キャラがジャンプ可能かどうかを判別
 		/*RaycastHit hit;
@@ -125,48 +120,36 @@ public class PlayerScript : MonoBehaviour {
 
 	/*移動用関数*/
 	void move(float h){
-		if (/*currentBaseState.nameHash == idleState && */touchFloor) {
+		if (currentBaseState.nameHash == idleState || currentBaseState.nameHash == locoState) {
 			anim.SetBool ("Run", true);
 		}
 		if (h < 0) {
-			//anim.SetBool ("Run", true);
 			transform.rotation = Quaternion.AngleAxis (-90f, Vector3.up);
-			velocity = new Vector3 (-h, 0, 0);
-			velocity *= forwardSpeed;					// 移動速度を掛ける
-			transform.localPosition -= velocity * Time.fixedDeltaTime;
+			this.transform.position += new Vector3(h,0,0) * forwardSpeed * Time.deltaTime;
 		}
 		else if (h > 0) {
-			//anim.SetBool ("Run", true);
 			transform.rotation = Quaternion.AngleAxis (90f, Vector3.up);
-			velocity *= forwardSpeed;						// 移動速度を掛ける
-			transform.localPosition += velocity * Time.fixedDeltaTime;
+			this.transform.position += new Vector3(h,0,0) * forwardSpeed * Time.deltaTime;
 		}
 	}
 
 	/*ジャンプ動作の関数 key判定条件も含む*/
 	void jumpAnimation(){
-		//if((Input.GetKeyDown(KeyCode.JoystickButton0) || Input.GetButtonDown("Jump") && touchFloor)){
-		if  (Input.GetButtonDown ("Jump") && (touchFloor || touchEnemy)) {
-			if(!anim.IsInTransition(0)){
-				anim.SetBool("Jump", true);
-				touchFloor = false;
-				//rigidbody.useGravity = false;
-				//rigidbody.AddForce(transform.up * jumpHeight , ForceMode.Impulse);
-				rigidbody.velocity = (transform.up * jumpHeight);
-			}
-	    }
+		anim.SetBool("Jump", true);
+		rigidbody.velocity = (transform.up * jumpHeight);
+		jumpFlag = false;
 	}
 
 	//ジャンプ中のあたり判定の操作・アニメーションeventから呼び出す
 	void JumpCol(){
 		Voice (VoiceId.Jump);
-		Ray ray = new Ray(transform.position + Vector3.up, -Vector3.up);
-		RaycastHit hitInfo = new RaycastHit();
+		//Ray ray = new Ray(transform.position + Vector3.up, -Vector3.up);
+		//RaycastHit hitInfo = new RaycastHit();
 		// 高さが useCurvesHeight 以上ある時のみ、コライダーの高さと中心をJUMP00アニメーションについているカーブで調整する
-			col.height = orgColHight - (jumpHeight * 0.01f);			// 調整されたコライダーの高さ
-			float adjCenterY = orgVectColCenter.y + jumpHeight*0.01f*colY;
-			col.center = new Vector3(0, adjCenterY, 0);		// 調整されたコライダーのセンター
-	//	}
+		col.height = orgColHight - (jumpHeight * 0.01f);			// 調整されたコライダーの高さ
+		float adjCenterY = orgVectColCenter.y + jumpHeight*0.01f*colY;
+		col.center = new Vector3(0, adjCenterY, 0);		// 調整されたコライダーのセンター
+		//	}
 		StartCoroutine ("resetCollider");
 	}
 
@@ -183,12 +166,11 @@ public class PlayerScript : MonoBehaviour {
 	//地面についているかの判定も行う
 	void OnTriggerEnter(Collider col){
 		if (col.gameObject.tag == "Enemy") {
-			touchFloor = false;
+			jumpFlag = false;
 			EffectManager.Instance.InstantEffect(EffectManager.EffectId.KillEnemy, col.gameObject.transform.position);
-			//rigidbody.AddForce(transform.up * jumpHeight * jumpOffset, ForceMode.Impulse);
 			rigidbody.velocity = (transform.up * jumpHeight);
 			GameObject Respawn = Instantiate(enemyRespawn,col.transform.position,col.transform.rotation) as GameObject;
-			RespawnEnemyManager rem = Respawn.AddComponent<RespawnEnemyManager>();
+			RespawnEnemyManager rem = Respawn.GetComponent<RespawnEnemyManager>();
 			rem.RespanEnemy(col.gameObject);
 			MainGameManager.Instance.SetObjectToObjectPool(col.gameObject);
 		}
@@ -211,38 +193,33 @@ public class PlayerScript : MonoBehaviour {
 	}
 
 	void OnCollisionStay(Collision col){
-		RaycastHit hit;
-		if (Physics.Raycast (transform.position + Vector3.up, -Vector3.up, out hit, 1.2f)) {
-			//Debug.Log(touchFloor);
-			if (col.gameObject.tag == "Floor")
-				touchFloor = true;
-			else 
-				touchFloor = false;
-		}
+		//RaycastHit hit;
+		//if (Physics.Raycast (transform.position + Vector3.up, -Vector3.up, out hit, 1.2f)) {
+		if (col.gameObject.tag == "Floor")
+			jumpFlag = true;
+		else 
+			jumpFlag = false;
 	}
+
 
 	void OnCollisionEnter(Collision col){
 		RaycastHit hit;
-		if (col.gameObject.tag == "Floor")
-			touchFloor = true;
-		if (Physics.Raycast (transform.position + Vector3.up, -Vector3.up, out hit, 1.2f)) {
+		if (Physics.Raycast (transform.position + Vector3.up, -Vector3.up, out hit, 0.5f)) {
 			if (col.gameObject.tag == "Floor")
-				touchFloor = true;
+				jumpFlag = true;
 			else 
-				touchFloor = false;
+				jumpFlag = false;
 		}
 		if (col.gameObject.tag == "Enemy")
-			touchEnemy = true;
+			jumpFlag = true;
 		else 
-			touchEnemy = false;
+			jumpFlag = false;
 
 	}
 
 	void OnCollisionExit(Collision col){
-		if (col.gameObject.tag == "Floor")
-			touchFloor = false;
-		if (col.gameObject.tag == "Enemy")
-			touchEnemy = false;
+		if (col.gameObject.tag == "Floor" || col.gameObject.tag == "Enemy")
+			jumpFlag = false;
 	}
 
 
