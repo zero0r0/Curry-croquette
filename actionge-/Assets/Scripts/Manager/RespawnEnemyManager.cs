@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class RespawnEnemyManager : MonoBehaviour {
 
@@ -10,7 +9,7 @@ public class RespawnEnemyManager : MonoBehaviour {
 	}
 
 	void OnBecameInvisible() {
-		obj.transform.position = this.transform.position;
-		Destroy (this.gameObject);
+		obj.transform.position = transform.position;
+		Destroy (gameObject);
 	}
 }

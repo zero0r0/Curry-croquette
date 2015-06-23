@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.UI;
+using UniRx;
 
 /// <summary>
 /// MainGame1Scene管理クラス
@@ -20,18 +20,20 @@ public class MainGameManager : SingletonMonoBehaviour<MainGameManager> {
 	public float changeSceneInterval = 3f;
 
 	// 最後に通過したチェックポイント
-	[SerializeField]
 	private Transform latestCheckPoint;
 
     new void Awake() {
-        CheckInstance();
+		base.Awake();
     }
 
 	void Start() {
+		// プレイヤーを取得し、落下死亡判定オブジェクトをプレイヤーに追従させるよう設定する
 		player = GameObject.FindGameObjectWithTag("Player") as GameObject;
 		deadLinePos = player.transform.position;
 		deadLinePos.y -= deadLineHeight;
 		deadLine = Instantiate(deadLine, deadLinePos, Quaternion.Euler(Vector3.zero)) as GameObject;
+
+		// オブジェクトプールのTransformを取得する
 		objectPool = GameObject.FindGameObjectWithTag("Object Pool").transform;
 	}
 
@@ -43,45 +45,38 @@ public class MainGameManager : SingletonMonoBehaviour<MainGameManager> {
     /// <summary>
     /// Endingシーンへ遷移する
     /// </summary>
-    public void TouthGoal() {
-		StartCoroutine(TransitionToEndingScene());
-    }
-
-	private IEnumerator TransitionToEndingScene() {
-		FadeInOutUtil.Instance.FadeIn(changeSceneInterval, Color.blue);
+    public void TouchGoal() {
+		FadeInOutUtil.Instance.FadeIn(changeSceneInterval, Color.blue, () => {
+			ItemManager.Instance.gameObject.transform.SetParent(null, false);
+			Application.LoadLevel("Ending");
+		});
 		AudioManager.Instance.FadeOutBGM(changeSceneInterval);
-		yield return new WaitForSeconds(changeSceneInterval);
-		ItemManager.Instance.gameObject.transform.parent = null;
-		Application.LoadLevel("Ending");
-	}
+    }
 
 	public void TouchCheckPoint(Transform checkPoint) {
 		latestCheckPoint = checkPoint;
 	}
 
+	// ゲームオーバー処理
 	public void ToGameOver() {
-		StartCoroutine(TransitionToGameOver());
-	}
-	
-	private IEnumerator TransitionToGameOver() {
-		FadeInOutUtil.Instance.FadeIn(changeSceneInterval, Color.black);
-
+		FadeInOutUtil.Instance.FadeIn(changeSceneInterval, Color.black, () => {
+			PlayerRespawn();
+		});
 		EffectManager.Instance.InstantEffect(EffectManager.EffectId.GameOver);
-		//AudioManager.Instance.PlaySound(AudioManager.SoundId.GameOver);
 		AudioManager.Instance.FadeOutBGM(changeSceneInterval);
+	}
 
-		yield return new WaitForSeconds(changeSceneInterval);
-
+	private void PlayerRespawn() {
 		FadeInOutUtil.Instance.FadeOut(changeSceneInterval, Color.black);
 		AudioManager.Instance.PlayBGM();
 
+		// プレイヤーを最後に到達したチェックポイントに配置する
 		player.transform.position = latestCheckPoint.position;
+		// PlayerScriptのenabledがfalseのとき取得するためにはこのように書く必要がある
 		(player.GetComponent(typeof(PlayerScript)) as PlayerScript).enabled = true;
 		player.GetComponent<PlayerScript>().Respawn();
-
-		//Application.LoadLevel (Application.loadedLevel);
 	}
-
+		
 	public void SetObjectToObjectPool(GameObject obj) {
 		obj.transform.parent = objectPool.transform;
 		obj.transform.localPosition = Vector3.zero;

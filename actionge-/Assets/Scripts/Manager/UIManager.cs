@@ -34,7 +34,7 @@ public class UIManager : SingletonMonoBehaviour<UIManager> {
 	/// <summary>
 	/// プレイヤーのHPのUIを更新する
 	/// </summary>
-    public void IncreasePlayerHP() {
+    public void DecreasePlayerHP() {
 		hp.fillAmount -= hpRate;
     }
 
