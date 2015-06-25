@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Managers;
 
 public class PlayerScript : MonoBehaviour {
 
@@ -14,7 +15,7 @@ public class PlayerScript : MonoBehaviour {
 	public int HP;
 
 	//rigidbody
-	private Rigidbody rigidbody;
+	private new Rigidbody rigidbody;
 
 	// CapsuleColliderで設定されているコライダのHeiht、Centerの初期値を収める変数
 	private float orgColHight;
@@ -184,6 +185,7 @@ public class PlayerScript : MonoBehaviour {
 		}
 		// タグがItemの場合、ItemManagerに取得したアイテムを送る
 		else if (col.tag == "Item") {
+			ItemBox.Instance.AddItem(col.gameObject.GetComponent<ItemBehaviour>().Item);
 			ItemManager.Instance.SendItem(col.gameObject.GetComponent<ItemBehaviour>().ItemId);
 			EffectManager.Instance.InstantEffect(EffectManager.EffectId.GetItem, col.gameObject.transform.position);
 			MainGameManager.Instance.SetObjectToObjectPool(col.gameObject);
