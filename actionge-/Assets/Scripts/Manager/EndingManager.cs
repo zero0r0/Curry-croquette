@@ -14,12 +14,13 @@ public class EndingManager : SingletonMonoBehaviour<EndingManager> {
 
 	// Use this for initialization
 	new void Awake () {
-		CheckInstance();
-		FadeInOutUtil.Instance.FadeOut(1f, Color.blue);
+		base.Awake();
 	}
 
 	void Start() {
-		canvas = GameObject.FindObjectOfType(typeof(Canvas)) as Canvas;
+		FadeInOutUtil.Instance.FadeOut(illustFadeOutTime, Color.blue);
+
+		canvas = FindObjectOfType(typeof(Canvas)) as Canvas;
 		illust = canvas.transform.GetChild(0).GetComponent<Image>();
 		audioSource = GetComponent<AudioSource>();
 		StartCoroutine(StartFadeIllust(illustFadeOutTime, illust));
@@ -45,9 +46,6 @@ public class EndingManager : SingletonMonoBehaviour<EndingManager> {
 		yield return new WaitForSeconds (resultInterval + 10f);
 		Application.LoadLevel ("Title");
 	}
-
-
-
 
 	private void ShowResult() {
 //		result.SetActive(true);

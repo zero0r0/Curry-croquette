@@ -1,10 +1,8 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
+using UniRx;
 
 public class SplashManager : SingletonMonoBehaviour<SplashManager> {
 
-	public Image logo;
 	public AudioClip logoVoice;
 	public float fadeTime;
 	private AudioSource audioSource;
@@ -12,23 +10,16 @@ public class SplashManager : SingletonMonoBehaviour<SplashManager> {
 	void Start() {
 		Cursor.visible = false;
 		audioSource = GetComponent<AudioSource>();
-		audioSource.clip = logoVoice;
-		StartCoroutine(StartSplash());
-	}
+		GetComponent<AudioSource>().clip = logoVoice;
 
-	IEnumerator StartSplash() {
-		FadeInOutUtil.Instance.FadeOut(fadeTime, Color.white);
-		yield return new WaitForSeconds(fadeTime);
-		audioSource.Play();
-		while (true) {
-			yield return new WaitForSeconds(0.1f);
-			if (!audioSource.isPlaying)
-				break;
-		}
-		FadeInOutUtil.Instance.FadeIn(fadeTime, Color.white);
-		yield return new WaitForSeconds(fadeTime * 2);
-		Application.LoadLevel("Title");
-	}
+		FadeInOutUtil.Instance.FadeOut(fadeTime, Color.white, () => {
+			audioSource.Play();
+			audioSource.ObserveEveryValueChanged(x => x.isPlaying)
+				.Where(x => !x)
+				.Subscribe(_ => FadeInOutUtil.Instance.FadeIn(fadeTime, Color.white, () => Application.LoadLevel("Title"))
+			);
+		});
 
+	}
 
 }

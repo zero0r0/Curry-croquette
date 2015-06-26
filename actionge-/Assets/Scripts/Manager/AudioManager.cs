@@ -1,6 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UniRx;
+using UniRx.Triggers;
 
+/// <summary>
+/// オーディオ管理クラス
+/// </summary>
 public class AudioManager : SingletonMonoBehaviour<AudioManager> {
 
 	public enum SoundId { GameOver, CroquetteTaberu,}
@@ -18,7 +23,7 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager> {
 
 	// Use this for initialization
 	void Start () {
-		audioSource = this.GetComponent<AudioSource>();
+		audioSource = GetComponent<AudioSource>();
 	}
 
 	public void PlaySound(SoundId soundId) {
@@ -38,7 +43,9 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager> {
 	}
 
 	public void FadeOutBGM(float fadeTime) {
-		StartCoroutine(FadeOut(fadeTime));
+		this.FixedUpdateAsObservable()
+			.TakeWhile(x => audioSource.volume > 0)
+			.Subscribe(x => audioSource.volume -= audioSource.volume / fadeTime);
 	}
 
 	private IEnumerator FadeOut(float fadeTime) {
