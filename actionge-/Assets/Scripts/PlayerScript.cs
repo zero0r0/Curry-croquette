@@ -51,6 +51,7 @@ public class PlayerScript : MonoBehaviour {
 	private AudioSource audioSource;
 
 	public GameObject enemyRespawn;
+	public GameObject goalEffect;
 
 	// Use this for initialization
 	void Start() {
@@ -92,8 +93,8 @@ public class PlayerScript : MonoBehaviour {
 		// currentBaseState.fullPathHash == locoState
 		// nameHashは古い書き方だそうです
 		if (currentBaseState.nameHash == locoState || currentBaseState.nameHash == idleState) {
-			//if((Input.GetKeyDown(KeyCode.JoystickButton0) || Input.GetButtonDown("Jump") && touchFloor)){
-			if (Input.GetButtonDown("Jump") && (jumpFlag)) {
+			if((Input.GetKeyDown(KeyCode.JoystickButton0) || Input.GetButtonDown("Jump")) && jumpFlag){
+			//if (Input.GetButtonDown("Jump") ) {
 				jumpAnimation();
 			}
 		}
@@ -192,6 +193,8 @@ public class PlayerScript : MonoBehaviour {
 		// タグがGoalの場合、MainGameManagerにエンディング遷移処理を行うよう、指示を出す
 		else if (col.tag == "Goal") {
 			MainGameManager.Instance.TouchGoal();
+			for(int i = 0; i < 3; i++)
+				Instantiate(goalEffect,new Vector3(col.transform.position.x + Random.Range(0,2f), -0.6f, col.transform.position.z), goalEffect.transform.rotation);
 		} else if (col.tag == "Check Point") {
 			EffectManager.Instance.InstantEffect(EffectManager.EffectId.CheckPoint, transform.position);
 			MainGameManager.Instance.TouchCheckPoint(col.transform);
