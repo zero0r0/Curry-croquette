@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class ItemBox : SingletonMonoBehaviour<ItemBox> {
 
-	public Sprite sprite;
-
 	new void Awake() {
 		base.Awake();
 		DontDestroyOnLoad(gameObject);
+	}
+
+	void Start() {
 		//SetList();
 	}
 
@@ -26,7 +27,7 @@ public class ItemBox : SingletonMonoBehaviour<ItemBox> {
 	[SerializeField]
 	public FoodStuff potato;
 	[SerializeField]
-	public Item item;
+	public FoodStuff item;
 	
 	public Item this[int i] {
 		get { return colledtedItem[i]; }

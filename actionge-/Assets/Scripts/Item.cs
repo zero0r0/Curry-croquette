@@ -14,10 +14,4 @@ public class Item {
 [System.Serializable]
 public class FoodStuff : Item {
 	public enum FoodStuffId { Meet, Onion, Curotte, Potato, }
-	private FoodStuffId foodStuffId;
-
-	public FoodStuff(FoodStuffId foodStuffId, Sprite foodStuffImage) {
-		itemSprite = foodStuffImage;
-		this.foodStuffId = foodStuffId;
-	}
 }

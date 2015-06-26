@@ -1,6 +1,5 @@
 ﻿using System;
 
-
 namespace Managers {
 	/// <summary>
 	/// アイテム管理用クラス
@@ -71,8 +70,6 @@ namespace Managers {
 			}
 			return true;
 		}
-
-
 
 		public bool CheckCollectNecessaryItems() {
 			foreach (Item item in items) {

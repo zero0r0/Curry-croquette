@@ -13,8 +13,8 @@ public class ItemBehaviour : MonoBehaviour {
     }
 
 	[SerializeField]
-	private Item item;
-	public Item Item {
+	private FoodStuff item;
+	public FoodStuff Item {
 		get { return item; }
 	}
 }

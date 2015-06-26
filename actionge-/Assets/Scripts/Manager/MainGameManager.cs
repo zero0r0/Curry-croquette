@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using Utils;
+using UniRx;
+using UniRx.Triggers;
 
 namespace Managers {
 	/// <summary>
@@ -7,14 +9,8 @@ namespace Managers {
 	/// </summary>
 	public class MainGameManager : SingletonMonoBehaviour<MainGameManager> {
 
-		// オブジェクトプールTransform
 		private Transform objectPool;
-
-		// 落下時のゲームオーバー判定
-		public GameObject deadLine;
-		public float deadLineHeight;
-		private GameObject player;
-		private Vector3 deadLinePos;
+		private Transform player;
 
 		// シーン遷移するまでのインターバルタイム
 		public float changeSceneInterval = 3f;
@@ -22,42 +18,50 @@ namespace Managers {
 		// 最後に通過したチェックポイント
 		private Transform latestCheckPoint;
 
-		new void Awake() {
-			base.Awake();
-		}
+		// ゴール時のエフェクト
+		public GameObject firework;
 
 		void Start() {
-			// プレイヤーを取得し、落下死亡判定オブジェクトをプレイヤーに追従させるよう設定する
-			player = GameObject.FindGameObjectWithTag("Player") as GameObject;
-			deadLinePos = player.transform.position;
-			deadLinePos.y -= deadLineHeight;
-			deadLine = Instantiate(deadLine, deadLinePos, Quaternion.Euler(Vector3.zero)) as GameObject;
-
 			// オブジェクトプールのTransformを取得する
 			objectPool = GameObject.FindGameObjectWithTag("Object Pool").transform;
-		}
+			player = GameObject.FindGameObjectWithTag("Player").transform;
 
-		void Update() {
-			deadLinePos.x = player.transform.position.x;
-			deadLine.transform.position = deadLinePos;
+			this.UpdateAsObservable()
+				.Where(x => Input.GetKeyDown(KeyCode.Q))
+				.Subscribe(x => {
+					TouchGoal();
+					foreach (var item in FindObjectsOfType<ItemBehaviour>()) {
+						ItemBox.Instance.AddItem(item.Item);
+					}
+				});
 		}
 
 		/// <summary>
 		/// Endingシーンへ遷移する
 		/// </summary>
 		public void TouchGoal() {
-			FadeInOutUtil.Instance.FadeIn(changeSceneInterval, Color.blue, () => {
-				ItemManager.Instance.gameObject.transform.SetParent(null, false);
-				Application.LoadLevel("Ending");
-			});
+			ParticleSystem firework
+				= (Instantiate(this.firework, player.transform.position, Quaternion.Euler(Vector3.up)) as GameObject)
+				.GetComponent<ParticleSystem>();
+			this.UpdateAsObservable()
+				.Where(x => !firework.isPlaying)
+				.First()
+				.Subscribe(_ => Application.LoadLevel("Result"));
+
 			AudioManager.Instance.FadeOutBGM(changeSceneInterval);
 		}
 
+		/// <summary>
+		/// チェックポイント通過処理
+		/// </summary>
+		/// <param name="checkPoint">通過したチェックポイントのTransform</param>
 		public void TouchCheckPoint(Transform checkPoint) {
 			latestCheckPoint = checkPoint;
 		}
 
-		// ゲームオーバー処理
+		/// <summary>
+		/// ゲームオーバー処理
+		/// </summary>
 		public void ToGameOver() {
 			FadeInOutUtil.Instance.FadeIn(changeSceneInterval, Color.black, () => {
 				PlayerRespawn();
@@ -66,6 +70,9 @@ namespace Managers {
 			AudioManager.Instance.FadeOutBGM(changeSceneInterval);
 		}
 
+		/// <summary>
+		/// プレイヤーの復活処理
+		/// </summary>
 		private void PlayerRespawn() {
 			FadeInOutUtil.Instance.FadeOut(changeSceneInterval, Color.black);
 			AudioManager.Instance.PlayBGM();
@@ -77,9 +84,12 @@ namespace Managers {
 			player.GetComponent<PlayerScript>().Respawn();
 		}
 
+		/// <summary>
+		/// オブジェクトをオブジェクトプールへセットする
+		/// </summary>
+		/// <param name="obj">オブジェクトプールにセットするGameObject</param>
 		public void SetObjectToObjectPool(GameObject obj) {
-			obj.transform.parent = objectPool.transform;
-			obj.transform.localPosition = Vector3.zero;
+			obj.transform.SetParent(objectPool.transform, false);
 		}
 
 	}

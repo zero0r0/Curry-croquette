@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UniRx;
 using UniRx.Triggers;
-
 
 namespace Managers {
 
@@ -23,10 +21,12 @@ namespace Managers {
 		public Sound croquette;
 
 		private AudioSource audioSource;
+		private float defaultVolume;
 
 		// Use this for initialization
 		void Start() {
 			audioSource = GetComponent<AudioSource>();
+			defaultVolume = audioSource.volume;
 		}
 
 		public void PlaySound(SoundId soundId) {
@@ -41,27 +41,15 @@ namespace Managers {
 		}
 
 		public void PlayBGM() {
-			audioSource.volume = 0.2f;
+			audioSource.volume = defaultVolume;
 			audioSource.Play();
 		}
 
 		public void FadeOutBGM(float fadeTime) {
+			float startTime = Time.time;
 			this.FixedUpdateAsObservable()
-				.TakeWhile(x => audioSource.volume > 0)
-				.Subscribe(x => audioSource.volume -= audioSource.volume / fadeTime);
-		}
-
-		private IEnumerator FadeOut(float fadeTime) {
-			float nowTime = 0f;
-			float fadeRate = audioSource.volume / fadeTime / 30;
-			while (nowTime < fadeTime) {
-				audioSource.volume -= fadeRate;
-				if (audioSource.volume <= 0)
-					break;
-				nowTime += fadeRate;
-				yield return new WaitForSeconds(1 / 30);
-			}
-			audioSource.Stop();
+				.TakeWhile(x => Time.time  - startTime < fadeTime)
+				.Subscribe(x => audioSource.volume -= audioSource.volume / fadeTime / 20);
 		}
 
 	}
