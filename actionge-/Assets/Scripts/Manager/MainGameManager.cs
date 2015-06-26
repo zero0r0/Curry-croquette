@@ -2,6 +2,7 @@
 using Utils;
 using UniRx;
 using UniRx.Triggers;
+using System;
 
 namespace Managers {
 	/// <summary>
@@ -30,9 +31,6 @@ namespace Managers {
 				.Where(x => Input.GetKeyDown(KeyCode.Q))
 				.Subscribe(x => {
 					TouchGoal();
-					foreach (var item in FindObjectsOfType<ItemBehaviour>()) {
-						ItemBox.Instance.AddItem(item.Item);
-					}
 				});
 		}
 
@@ -40,15 +38,22 @@ namespace Managers {
 		/// Endingシーンへ遷移する
 		/// </summary>
 		public void TouchGoal() {
-			ParticleSystem firework
-				= (Instantiate(this.firework, player.transform.position, Quaternion.Euler(Vector3.up)) as GameObject)
-				.GetComponent<ParticleSystem>();
-			this.UpdateAsObservable()
-				.Where(x => !firework.isPlaying)
-				.First()
-				.Subscribe(_ => Application.LoadLevel("Result"));
-
-			AudioManager.Instance.FadeOutBGM(changeSceneInterval);
+			
+			Observable.Timer(TimeSpan.FromSeconds(0f), TimeSpan.FromSeconds(0.3f))
+				.Take(10)
+				.Subscribe(_ => {
+					AudioManager.Instance.PlaySound(AudioManager.SoundId.Firework);
+					ParticleSystem firework
+						= (Instantiate(this.firework, player.transform.position, transform.rotation) as GameObject)
+						.GetComponent<ParticleSystem>();
+					firework.ObserveEveryValueChanged(x => x.isPlaying)
+						.Where(x => !x)
+						.Subscribe(x => { }, () => { AudioManager.Instance.PlaySound(AudioManager.SoundId.Firework); });
+				}).AddTo(gameObject);
+			Observable.Timer(TimeSpan.FromSeconds(0f), TimeSpan.FromSeconds(1f))
+				.Buffer(8)
+				.Subscribe(x => Application.LoadLevel("Result")).AddTo(gameObject);
+			enabled = false;
 		}
 
 		/// <summary>

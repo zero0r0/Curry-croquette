@@ -9,7 +9,7 @@ namespace Managers {
 	/// </summary>
 	public class AudioManager : SingletonMonoBehaviour<AudioManager> {
 
-		public enum SoundId { GameOver, CroquetteTaberu, }
+		public enum SoundId { GameOver, CroquetteTaberu, Firework, }
 
 		[System.Serializable]
 		public struct Sound {
@@ -19,6 +19,7 @@ namespace Managers {
 
 		public Sound gameOver;
 		public Sound croquette;
+		public Sound firework;
 
 		private AudioSource audioSource;
 		private float defaultVolume;
@@ -36,6 +37,9 @@ namespace Managers {
 					break;
 				case SoundId.CroquetteTaberu:
 					audioSource.PlayOneShot(croquette.sound);
+					break;
+				case SoundId.Firework:
+					audioSource.PlayOneShot(firework.sound);
 					break;
 			}
 		}

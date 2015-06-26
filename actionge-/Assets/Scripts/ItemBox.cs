@@ -43,6 +43,6 @@ public class ItemBox : SingletonMonoBehaviour<ItemBox> {
 	/// <typeparam name="T">アイテムの種類</typeparam>
 	/// <returns>指定された種類のアイテムのリスト</returns>
 	public List<T> GetAllCollectedList<T>() where T : Item {
-		return (from x in colledtedItem where x is T select x).Cast<T>().ToList<T>();
+		return (from x in colledtedItem where x is T select x).Cast<T>().ToList() ?? new List<T>();
 	}
 }
