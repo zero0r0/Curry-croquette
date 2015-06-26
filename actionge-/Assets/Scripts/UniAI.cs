@@ -21,7 +21,7 @@ public class UniAI : MonoBehaviour {
 		if (action) {
 			time += Time.deltaTime;
 			rand = Random.Range (0, 3);
-			if (time > 5) {
+			if (time > 4) {
 				Instantiate (asset [rand], this.transform.position + new Vector3 (0, 2.5f, 0), this.transform.rotation);
 				time = 0;
 			}

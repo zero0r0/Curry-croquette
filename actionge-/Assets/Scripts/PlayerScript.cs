@@ -167,27 +167,28 @@ public class PlayerScript : MonoBehaviour {
 	void OnTriggerEnter(Collider col){
 		if (col.gameObject.tag == "Enemy") {
 			jumpFlag = false;
-			EffectManager.Instance.InstantEffect(EffectManager.EffectId.KillEnemy, col.gameObject.transform.position);
+			EffectManager.Instance.InstantEffect (EffectManager.EffectId.KillEnemy, col.gameObject.transform.position);
 			rigidbody.velocity = (transform.up * jumpHeight);
-			GameObject Respawn = Instantiate(enemyRespawn,col.transform.position,col.transform.rotation) as GameObject;
-			RespawnEnemyManager rem = Respawn.GetComponent<RespawnEnemyManager>();
-			rem.RespanEnemy(col.gameObject);
-			MainGameManager.Instance.SetObjectToObjectPool(col.gameObject);
+			GameObject Respawn = Instantiate (enemyRespawn, col.transform.position, col.transform.rotation) as GameObject;
+			RespawnEnemyManager rem = Respawn.GetComponent<RespawnEnemyManager> ();
+			rem.RespanEnemy (col.gameObject);
+			MainGameManager.Instance.SetObjectToObjectPool (col.gameObject);
 		}
         // タグがItemの場合、ItemManagerに取得したアイテムを送る
         else if (col.tag == "Item") {
-            ItemManager.Instance.SendItem(col.gameObject.GetComponent<ItemBehaviour>().ItemId);
-			EffectManager.Instance.InstantEffect(EffectManager.EffectId.GetItem, col.gameObject.transform.position);
-            MainGameManager.Instance.SetObjectToObjectPool(col.gameObject);
-			Voice(VoiceId.Get);
-        }
+			ItemManager.Instance.SendItem (col.gameObject.GetComponent<ItemBehaviour> ().ItemId);
+			EffectManager.Instance.InstantEffect (EffectManager.EffectId.GetItem, col.gameObject.transform.position);
+			MainGameManager.Instance.SetObjectToObjectPool (col.gameObject);
+			Voice (VoiceId.Get);
+		}
         // タグがGoalの場合、MainGameManagerにエンディング遷移処理を行うよう、指示を出す
 		else if (col.tag == "Goal") {
-            MainGameManager.Instance.TouthGoal();
-        }
-		else if (col.tag == "Check Point") {
-			EffectManager.Instance.InstantEffect(EffectManager.EffectId.CheckPoint, this.transform.position);
-			MainGameManager.Instance.TouchCheckPoint(col.transform);
+			MainGameManager.Instance.TouthGoal ();
+		} else if (col.tag == "Check Point") {
+			EffectManager.Instance.InstantEffect (EffectManager.EffectId.CheckPoint, this.transform.position);
+			MainGameManager.Instance.TouchCheckPoint (col.transform);
+		} else if (col.tag == "Adjust") {
+			this.transform.position = new Vector3(this.transform.position.x , this.transform.position.y ,col.transform.position.z);
 		}
 
 	}
