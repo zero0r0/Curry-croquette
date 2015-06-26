@@ -4,6 +4,7 @@ using System.Collections;
 public class UniAI : MonoBehaviour {
 
 	public GameObject[] asset;
+	public GameObject Player;
 
 	float time;
 	int rand;
@@ -20,12 +21,16 @@ public class UniAI : MonoBehaviour {
 	void Update () {
 		if (action) {
 			time += Time.deltaTime;
-			rand = Random.Range (0, 3);
+			rand = Random.Range (0, asset.Length);
 			if (time > 4) {
 				Instantiate (asset [rand], this.transform.position + new Vector3 (0, 2.5f, 0), this.transform.rotation);
 				time = 0;
 			}
 		}
+		if (Vector3.Distance (Player.transform.position, transform.position) <= 10f) 
+			action = true;
+		else
+			action = false;
 	}
 
 	//プレイヤーにあたったときの判定
@@ -34,13 +39,4 @@ public class UniAI : MonoBehaviour {
 			col.gameObject.GetComponent<PlayerScript>().ApplyDamage(1);
 		}
 	}
-	
-	void OnBecameVisible (){		
-		action = true;
-	}
-
-	void OnBecameInvisible (){
-		action = false;
-	}
-
 }
