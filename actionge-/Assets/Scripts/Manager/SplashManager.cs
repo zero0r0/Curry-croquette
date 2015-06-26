@@ -31,6 +31,7 @@ namespace Managers {
 			FadeInOutUtil.Instance.FadeOut(fadeTime, Color.white, () => {
 				audioSource.Play();
 				audioSource.ObserveEveryValueChanged(x => x.isPlaying)
+					.First()
 					.Where(x => !x)
 					.Subscribe(_ => FadeInOutUtil.Instance.FadeIn(fadeTime, Color.white, () => Application.LoadLevel("Title"))
 				);
