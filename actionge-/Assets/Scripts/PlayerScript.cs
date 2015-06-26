@@ -197,6 +197,8 @@ public class PlayerScript : MonoBehaviour {
 		} else if (col.tag == "Check Point") {
 			EffectManager.Instance.InstantEffect(EffectManager.EffectId.CheckPoint, transform.position);
 			MainGameManager.Instance.TouchCheckPoint(col.transform);
+		} else if (col.tag == "Adjust") {
+			this.transform.position = new Vector3(this.transform.position.x , this.transform.position.y ,col.transform.position.z);
 		}
 
 	}
@@ -276,5 +278,4 @@ public class PlayerScript : MonoBehaviour {
 		anim.SetTrigger("Respawn");
 		UIManager.Instance.PlayerRespawn();
 	}
-
 }
