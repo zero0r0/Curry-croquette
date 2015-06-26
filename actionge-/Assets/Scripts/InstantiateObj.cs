@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class InstantiateObj : MonoBehaviour {
 
-	Rigidbody rigidbody;
+	new Rigidbody rigidbody;
 
 	// Use this for initialization
 	void Start () {

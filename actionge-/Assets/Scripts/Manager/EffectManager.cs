@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 [RequireComponent(typeof(AudioSource))]
 public class EffectManager : SingletonMonoBehaviour<EffectManager> {
@@ -53,10 +52,6 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager> {
 	}
 
 	public void InstantEffect(EffectId effectId) {
-
-		EffectParticle func = (particle, pos, audioclip) => {
-			audioSource.PlayOneShot(audioclip);
-		};
 
 		switch (effectId) {
 			case EffectId.GetItem:

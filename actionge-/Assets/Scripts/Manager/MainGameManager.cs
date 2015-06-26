@@ -1,85 +1,97 @@
 ﻿using UnityEngine;
-using System.Collections;
+using Utils;
 using UniRx;
+using UniRx.Triggers;
 
-/// <summary>
-/// MainGame1Scene管理クラス
-/// </summary>
-public class MainGameManager : SingletonMonoBehaviour<MainGameManager> {
+namespace Managers {
+	/// <summary>
+	/// MainGame1Scene管理クラス
+	/// </summary>
+	public class MainGameManager : SingletonMonoBehaviour<MainGameManager> {
 
-	// オブジェクトプールTransform
-	private Transform objectPool;
+		private Transform objectPool;
+		private Transform player;
 
-	// 落下時のゲームオーバー判定
-	public GameObject deadLine;
-	public float deadLineHeight;
-	private GameObject player;
-	private Vector3 deadLinePos;
+		// シーン遷移するまでのインターバルタイム
+		public float changeSceneInterval = 3f;
 
-	// シーン遷移するまでのインターバルタイム
-	public float changeSceneInterval = 3f;
+		// 最後に通過したチェックポイント
+		private Transform latestCheckPoint;
 
-	// 最後に通過したチェックポイント
-	private Transform latestCheckPoint;
+		// ゴール時のエフェクト
+		public GameObject firework;
 
-    new void Awake() {
-		base.Awake();
-    }
+		void Start() {
+			// オブジェクトプールのTransformを取得する
+			objectPool = GameObject.FindGameObjectWithTag("Object Pool").transform;
+			player = GameObject.FindGameObjectWithTag("Player").transform;
 
-	void Start() {
-		// プレイヤーを取得し、落下死亡判定オブジェクトをプレイヤーに追従させるよう設定する
-		player = GameObject.FindGameObjectWithTag("Player") as GameObject;
-		deadLinePos = player.transform.position;
-		deadLinePos.y -= deadLineHeight;
-		deadLine = Instantiate(deadLine, deadLinePos, Quaternion.Euler(Vector3.zero)) as GameObject;
+			this.UpdateAsObservable()
+				.Where(x => Input.GetKeyDown(KeyCode.Q))
+				.Subscribe(x => {
+					TouchGoal();
+					foreach (var item in FindObjectsOfType<ItemBehaviour>()) {
+						ItemBox.Instance.AddItem(item.Item);
+					}
+				});
+		}
 
-		// オブジェクトプールのTransformを取得する
-		objectPool = GameObject.FindGameObjectWithTag("Object Pool").transform;
-	}
+		/// <summary>
+		/// Endingシーンへ遷移する
+		/// </summary>
+		public void TouchGoal() {
+			ParticleSystem firework
+				= (Instantiate(this.firework, player.transform.position, Quaternion.Euler(Vector3.up)) as GameObject)
+				.GetComponent<ParticleSystem>();
+			this.UpdateAsObservable()
+				.Where(x => !firework.isPlaying)
+				.First()
+				.Subscribe(_ => Application.LoadLevel("Result"));
 
-	void Update() {
-		deadLinePos.x = player.transform.position.x;
-		deadLine.transform.position = deadLinePos;
-	}
+			AudioManager.Instance.FadeOutBGM(changeSceneInterval);
+		}
 
-    /// <summary>
-    /// Endingシーンへ遷移する
-    /// </summary>
-    public void TouchGoal() {
-		FadeInOutUtil.Instance.FadeIn(changeSceneInterval, Color.blue, () => {
-			ItemManager.Instance.gameObject.transform.SetParent(null, false);
-			Application.LoadLevel("Ending");
-		});
-		AudioManager.Instance.FadeOutBGM(changeSceneInterval);
-    }
+		/// <summary>
+		/// チェックポイント通過処理
+		/// </summary>
+		/// <param name="checkPoint">通過したチェックポイントのTransform</param>
+		public void TouchCheckPoint(Transform checkPoint) {
+			latestCheckPoint = checkPoint;
+		}
 
-	public void TouchCheckPoint(Transform checkPoint) {
-		latestCheckPoint = checkPoint;
-	}
+		/// <summary>
+		/// ゲームオーバー処理
+		/// </summary>
+		public void ToGameOver() {
+			FadeInOutUtil.Instance.FadeIn(changeSceneInterval, Color.black, () => {
+				PlayerRespawn();
+			});
+			EffectManager.Instance.InstantEffect(EffectManager.EffectId.GameOver);
+			AudioManager.Instance.FadeOutBGM(changeSceneInterval);
+		}
 
-	// ゲームオーバー処理
-	public void ToGameOver() {
-		FadeInOutUtil.Instance.FadeIn(changeSceneInterval, Color.black, () => {
-			PlayerRespawn();
-		});
-		EffectManager.Instance.InstantEffect(EffectManager.EffectId.GameOver);
-		AudioManager.Instance.FadeOutBGM(changeSceneInterval);
-	}
+		/// <summary>
+		/// プレイヤーの復活処理
+		/// </summary>
+		private void PlayerRespawn() {
+			FadeInOutUtil.Instance.FadeOut(changeSceneInterval, Color.black);
+			AudioManager.Instance.PlayBGM();
 
-	private void PlayerRespawn() {
-		FadeInOutUtil.Instance.FadeOut(changeSceneInterval, Color.black);
-		AudioManager.Instance.PlayBGM();
+			// プレイヤーを最後に到達したチェックポイントに配置する
+			player.transform.position = latestCheckPoint.position;
+			// PlayerScriptのenabledがfalseのとき取得するためにはこのように書く必要がある
+			(player.GetComponent(typeof(PlayerScript)) as PlayerScript).enabled = true;
+			player.GetComponent<PlayerScript>().Respawn();
+		}
 
-		// プレイヤーを最後に到達したチェックポイントに配置する
-		player.transform.position = latestCheckPoint.position;
-		// PlayerScriptのenabledがfalseのとき取得するためにはこのように書く必要がある
-		(player.GetComponent(typeof(PlayerScript)) as PlayerScript).enabled = true;
-		player.GetComponent<PlayerScript>().Respawn();
-	}
-		
-	public void SetObjectToObjectPool(GameObject obj) {
-		obj.transform.parent = objectPool.transform;
-		obj.transform.localPosition = Vector3.zero;
+		/// <summary>
+		/// オブジェクトをオブジェクトプールへセットする
+		/// </summary>
+		/// <param name="obj">オブジェクトプールにセットするGameObject</param>
+		public void SetObjectToObjectPool(GameObject obj) {
+			obj.transform.SetParent(objectPool.transform, false);
+		}
+
 	}
 
 }
